@@ -1,17 +1,16 @@
-# trabalhoPratico-GCC218-Algoritmos-em-Grafos-UFLA
-Trabalho prático GCC218-Algoritmos-em-Grafos - UFLA  
-<center>UNIVERSIDADE FEDERAL DE LAVRAS  
-INSTITUTO DE CIÊNCIAS EXATAS E TECNOLÓGICAS  
-DEPARTAMENTO DE CIÊNCIAS DA COMPUTAÇÃO  
-GCC218 - ALGORITMOS EM GRAFOS  
-Prof. Mayron César de O. Moreira<center>  
-Descrição do Problema  
-Durante a pandemia, a demanda por serviços logísticos cresceu em virtude do  
-aumento de compras online (Fonte: “Logística cresce na pandemia com aumento de  
-compras pela internet”, por Paula Monteiro, em Pequenas Empresas & Grandes  
-Negócios). Grandes empresas que realizam suas operações de entregas de  
-produtos buscam sempre uma redução de custos logísticos, a fim de utilizar tal  
-economia de recursos em outros investimentos de interesse corporativo. Um dos  
+
+# <center>Trabalho prático GCC218-Algoritmos-em-Grafos</center>  
+<center>UNIVERSIDADE FEDERAL DE LAVRAS</center>  
+<center>INSTITUTO DE CIÊNCIAS EXATAS E TECNOLÓGICAS</center>  
+<center>DEPARTAMENTO DE CIÊNCIAS DA COMPUTAÇÃO</center>  
+<center>GCC218 - ALGORITMOS EM GRAFOS</center>  
+<center>Prof. Mayron César de O. Moreira</center>
+    
+## Descrição do Problema  
+    
+Durante a pandemia, a demanda por serviços logísticos cresceu em virtude do aumento de compras online (Fonte: “Logística cresce na pandemia com aumento de  
+compras pela internet”, por Paula Monteiro, em Pequenas Empresas & Grandes Negócios). Grandes empresas que realizam suas operações de entregas de  
+produtos buscam sempre uma redução de custos logísticos, a fim de utilizar tal economia de recursos em outros investimentos de interesse corporativo. Um dos  
 problemas mais comuns nesses contextos é descrito formalmente abaixo.  
 Considere que uma empresa possua uma frota de veículos M e um conjunto de  
 clientes C a serem atendidos. O deslocamento dos veículos pode ser modelado  
