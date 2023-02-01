@@ -1,8 +1,8 @@
 
-# <p style="text-align:center">Trabalho prático GCC218-Algoritmos-em-Grafos<br>  
-<p style="text-align:center">UNIVERSIDADE FEDERAL DE LAVRAS<br>       
-<p style="text-align:center">INSTITUTO DE CIÊNCIAS EXATAS E TECNOLÓGICAS<br>      
-<p style="text-align:center">DEPARTAMENTO DE CIÊNCIAS DA COMPUTAÇÃO<p>      
+# <p style="text-align:center">Trabalho prático GCC218-Algoritmos-em-Grafos</br>  
+<p style="text-align:center">UNIVERSIDADE FEDERAL DE LAVRAS</br>       
+<p style="text-align:center">INSTITUTO DE CIÊNCIAS EXATAS E TECNOLÓGICAS</br>      
+<p style="text-align:center">DEPARTAMENTO DE CIÊNCIAS DA COMPUTAÇÃO</p>      
 <p style="text-align:center">GCC218 - ALGORITMOS EM GRAFOS<p>      
 <p style="text-align:center">Prof. Mayron César de O. Moreira<p>  
 
