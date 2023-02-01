@@ -239,7 +239,7 @@ Os campos são:
 \<p>: o par de coleta se \<id> for uma entrega e 0 caso contrário;  
 \<d>: o par de entrega se \<id> for uma coleta e 0 caso contrário;   
 
-O \<p> e <d> são apenas para fins de integridade.   
+O \<p> e \<d> são apenas para fins de integridade.   
 Em todas as instâncias, para um local de coleta <id> sua entrega é dada por (\<id>+((SIZE-1)/2)).   
 Para um local de entrega \<id>, sua coleta é dada por (\<id>-((SIZE-1)/2)).   
    
