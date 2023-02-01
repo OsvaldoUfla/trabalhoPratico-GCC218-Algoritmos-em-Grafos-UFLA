@@ -5,7 +5,10 @@ INSTITUTO DE CIÊNCIAS EXATAS E TECNOLÓGICAS
 DEPARTAMENTO DE CIÊNCIAS DA COMPUTAÇÃO    
 GCC218 - ALGORITMOS EM GRAFOS    
 Prof. Mayron César de O. Moreira</center>  
-    
+  
+<div style="text-align:center">Esse texto vai ficar centralizado.
+<p>Este parágrafo também.</p></div>
+      
 ## Descrição do Problema  
     
 Durante a pandemia, a demanda por serviços logísticos cresceu em virtude do aumento de compras online (Fonte: “Logística cresce na pandemia com aumento de  
