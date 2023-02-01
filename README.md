@@ -236,11 +236,12 @@ Os campos são:
 \<etw>: tempo mais cedo possível para iniciar o serviço (janela de tempo);  
 \<ltw>: última hora possível para iniciar o serviço (janela de tempo);  
 \<dur>: a duração do serviço neste local;  
-\<p>: o par de coleta se \<id> for uma entrega; e 0 caso contrário;  
-\<d>: o par de entrega se \<id> for uma coleta; e 0 caso contrário
-    O \<p> e <d> são apenas para fins de integridade. Em todas as instâncias, para um
-    local de coleta <id> sua entrega é dada por (\<id>+((SIZE-1)/2)).   
-    Para um local de entrega \<id>, sua coleta é dada por (\<id>-((SIZE-1)/2)).  
+\<p>: o par de coleta se \<id> for uma entrega e 0 caso contrário;  
+\<d>: o par de entrega se \<id> for uma coleta e 0 caso contrário;   
+
+    O \<p> e <d> são apenas para fins de integridade.   
+    Em todas as instâncias, para um local de coleta <id> sua entrega é dada por (\<id>+((SIZE-1)/2)).   
+    Para um local de entrega \<id>, sua coleta é dada por (\<id>-((SIZE-1)/2)).   
    
 Após todos os NODES, existe uma linha contendo a palavra EDGES seguida de
 SIZE linhas, cada uma com SIZE valores inteiros separados por um único espaço
