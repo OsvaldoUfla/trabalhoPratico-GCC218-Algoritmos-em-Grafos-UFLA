@@ -9,6 +9,9 @@ Prof. Mayron César de O. Moreira</center>
 <div style="text-align:center">Esse texto vai ficar centralizado.
 <p>Este parágrafo também.</p></div>
       
+<p style="text-align:center">Essa linha vai ficar centralizada.<br>
+E esta linha também.</p>  
+
 ## Descrição do Problema  
     
 Durante a pandemia, a demanda por serviços logísticos cresceu em virtude do aumento de compras online (Fonte: “Logística cresce na pandemia com aumento de  
