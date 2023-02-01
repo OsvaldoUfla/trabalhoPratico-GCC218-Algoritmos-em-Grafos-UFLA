@@ -8,8 +8,8 @@ Prof. Mayron César de O. Moreira
 
 ## Descrição do Problema  
     
-Durante a pandemia, a demanda por serviços logísticos cresceu em virtude do aumento de compras online  
-(Fonte: “Logística cresce na pandemia com aumento de  
+Durante a pandemia, a demanda por serviços logísticos cresceu em virtude do aumento de compras online (Fonte:  
+ “Logística cresce na pandemia com aumento de  
 compras pela internet”, por Paula Monteiro, em Pequenas Empresas & Grandes Negócios). Grandes empresas que realizam suas operações de entregas de  
 produtos buscam sempre uma redução de custos logísticos, a fim de utilizar tal economia de recursos em outros investimentos de interesse corporativo. Um dos  
 problemas mais comuns nesses contextos é descrito formalmente abaixo.  
