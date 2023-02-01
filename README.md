@@ -1,10 +1,10 @@
 # trabalhoPratico-GCC218-Algoritmos-em-Grafos-UFLA
-Trabalho prático GCC218-Algoritmos-em-Grafos - UFLA
-UNIVERSIDADE FEDERAL DE LAVRAS  
+Trabalho prático GCC218-Algoritmos-em-Grafos - UFLA  
+<center>UNIVERSIDADE FEDERAL DE LAVRAS  
 INSTITUTO DE CIÊNCIAS EXATAS E TECNOLÓGICAS  
 DEPARTAMENTO DE CIÊNCIAS DA COMPUTAÇÃO  
 GCC218 - ALGORITMOS EM GRAFOS  
-Prof. Mayron César de O. Moreira  
+Prof. Mayron César de O. Moreira<center>  
 Descrição do Problema  
 Durante a pandemia, a demanda por serviços logísticos cresceu em virtude do  
 aumento de compras online (Fonte: “Logística cresce na pandemia com aumento de  
