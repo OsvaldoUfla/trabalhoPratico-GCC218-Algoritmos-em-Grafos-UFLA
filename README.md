@@ -79,7 +79,7 @@ das macros são descritas abaixo.
 
 ## Macroentrega 1: Criação de funções para leitura dos dados / Proposição de um algoritmo para a resolução do problema
 1. Implementação das estruturas de dados.  
-2. Implementação de função(ões) para a leitura de dados.  
+2. Implementação de funções para a leitura de dados.  
 3. Implementação de função de verificação de solução.  
 
 ○ Gere uma solução aleatória. Passando tal solução como parâmetro,
