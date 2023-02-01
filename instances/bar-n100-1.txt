@@ -1,6 +1,6 @@
 NAME: bar-n100-1
 LOCATION: Barcelona
-COMMENT:  Sartori and Buriol (2019)
+COMMENT: Sartori and Buriol (2019)
 TYPE: PDPTW
 SIZE: 101
 DISTRIBUTION: cluster-random (7 / 1.5)
