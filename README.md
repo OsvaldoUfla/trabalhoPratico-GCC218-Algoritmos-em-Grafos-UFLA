@@ -22,7 +22,7 @@ através de um grafo direcionado G = (V, A). O conjunto de vértices do grafo po
 ser representado por V = P ∪ D ∪ {0}, em que P representa o conjunto de pontos  
 de coleta, D o conjunto de pontos de entrega e 0 representa o depósito. O conjunto  
 de arcos é denotado por A, e representa as conexões entre os vértices, seja  
-depósito ou clientes. A cada arco (i, j), i ≠ j, associa-se um custo cij e um tempo tij.  
+depósito ou clientes. A cada arco (i, j), i != j, associa-se um custo cij e um tempo tij.  
 Assume-se que os tempos de deslocamento respeitam a desigualdade triangular (  
 ∀i, j, k εV, tij ≤ tik + tkj). Considera-se que o custo de deslocar-se entre i e j é  
 diretamente proporcional ao tempo de deslocamento entre i e j.  
