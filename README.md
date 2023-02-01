@@ -1,6 +1,6 @@
 
 # <center>Trabalho prático GCC218-Algoritmos-em-Grafos</center>  
-<center>UNIVERSIDADE FEDERAL DE LAVRAS</center>    
+<center>UNIVERSIDADE FEDERAL DE LAVRAS   </center>    
 INSTITUTO DE CIÊNCIAS EXATAS E TECNOLÓGICAS    
 DEPARTAMENTO DE CIÊNCIAS DA COMPUTAÇÃO    
 GCC218 - ALGORITMOS EM GRAFOS    
