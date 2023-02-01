@@ -9,10 +9,10 @@ Prof. Mayron César de O. Moreira
 ## Descrição do Problema  
     
 Durante a pandemia, a demanda por serviços logísticos cresceu em virtude do aumento de compras online  
-(Fonte: “Logística cresce na pandemia com aumento de compras pela internet”, por Paula Monteiro, em  
-Pequenas Empresas & Grandes Negócios). Grandes empresas que realizam suas operações de entregas de  
-produtos buscam sempre uma redução de custos logísticos, a fim de utilizar tal economia de recursos  
-em outros investimentos de interesse corporativo.   
+[Fonte: “Logística cresce na pandemia com aumento de compras pela internet”, por Paula Monteiro, em  
+Pequenas Empresas & Grandes Negócios](https://g1.globo.com/economia/pme/pequenas-empresas-grandes-negocios/noticia/2021/01/31/logistica-cresce-na-pandemia-com-aumento-de-compras-pela-internet.ghtml).   
+Grandes empresas que realizam suas operações de entregas de produtos buscam sempre uma redução de custos  
+logísticos, a fim de utilizar tal economia de recursos em outros investimentos de interesse corporativo.   
 Um dos problemas mais comuns nesses contextos é descrito formalmente abaixo.  
     
 Considere que uma empresa possua uma frota de veículos M e um conjunto de  
