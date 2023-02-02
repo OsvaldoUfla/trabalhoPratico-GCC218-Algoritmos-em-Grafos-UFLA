@@ -6,7 +6,6 @@ using namespace std;
 #include "Instancia.h"
 #include "Vertice.h"
 
-using namespace std;
 
 string campos [10];
 int coutCampos = 0;
