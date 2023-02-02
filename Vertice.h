@@ -26,17 +26,16 @@ class Vertice
         int get_d();                         //retorna o par de entrega
 
     private:
-        int id;          //<id>: o identificador único do ponto (o ponto 0 é o depósito único);  
-        double lat;      //<lat>: latitude deste local;  
-        double longi;    //<long>: longitude deste local;  
-        int dem;         //<dem>: a demanda deste nó (dem > 0 para coleta, dem < 0 para entrega);  
-        int etw;         //<etw>: tempo mais cedo possível para iniciar o serviço (janela de tempo);  
-        int ltw;         //<ltw>: última hora possível para iniciar o serviço (janela de tempo);  
-        int dur;         //<dur>: a duração do serviço neste local;  
-        int p;           //<p>: o par de coleta se \<id> for uma entrega e 0 caso contrário;  
-        int d;           //<d>: o par de entrega se \<id> for uma coleta e 0 caso contrário;  
-        int *distancias; //distancia entre os vertices; números inteiros representam os tempos de viagem entre cada par de locais na instância, medidos em minutos 
-        //78 41.36498840 2.12658370 -113 97 217 5 28 0
+        int id;          //<id>: o identificador único do ponto (o ponto 0 é o depósito único);
+        double lat;      //<lat>: latitude deste local;
+        double longi;    //<long>: longitude deste local;
+        int dem;         //<dem>: a demanda deste nó (dem > 0 para coleta, dem < 0 para entrega);
+        int etw;         //<etw>: tempo mais cedo possível para iniciar o serviço (janela de tempo);
+        int ltw;         //<ltw>: última hora possível para iniciar o serviço (janela de tempo);
+        int dur;         //<dur>: a duração do serviço neste local;
+        int p;           //<p>: o par de coleta se \<id> for uma entrega e 0 caso contrário;
+        int d;           //<d>: o par de entrega se \<id> for uma coleta e 0 caso contrário;
+        int *distancias; //distancia entre os vertices; números inteiros representam os tempos de viagem entre cada par de locais na instância, medidos em minutos
 };
 
 
