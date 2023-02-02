@@ -4,7 +4,6 @@
 class Vertice
 {
     public:
-        Vertice();
         void setDistancias(int *distancias); //seta o vetor de distancias
         void set_id(int id);                 //seta o id do vertice
         void set_lat(double lat);            //seta a latitude do vertice
@@ -37,28 +36,30 @@ class Vertice
         int p;           //<p>: o par de coleta se \<id> for uma entrega e 0 caso contrário;  
         int d;           //<d>: o par de entrega se \<id> for uma coleta e 0 caso contrário;  
         int *distancias; //distancia entre os vertices; números inteiros representam os tempos de viagem entre cada par de locais na instância, medidos em minutos 
-        
+        //78 41.36498840 2.12658370 -113 97 217 5 28 0
 };
 
-//Construtor
-Vertice::Vertice()
-{
-    id = 0;
-    lat = 0.0;
-    longi = 0.0;
-    int dem = 0;
-    int etw = 0;
-    int ltw = 0;
-    int dur = 0;
-    int p = 0;
-    int d = 0;
-}
 
-void Vertice::setDistancias(int *distancias)
-{
-    this->distancias = distancias;
-}
+void Vertice::setDistancias(int *distancias){ this->distancias = distancias; }
+void Vertice::set_id(int id){ this->id = id; }
+void Vertice::set_lat(double lat){ this->lat = lat; }
+void Vertice::set_longi(double longi){ this->longi = longi; }
+void Vertice::set_dem(int dem){ this->dem = dem; }
+void Vertice::set_etw(int etw){ this->etw = etw; }
+void Vertice::set_ltw(int ltw){ this->ltw = ltw; }
+void Vertice::set_dur(int dur){ this->dur = dur; }
+void Vertice::set_p(int p){ this->p = p; }
+void Vertice::set_d(int d){ this->d = d; }
+
+double Vertice::get_lat() { return this->lat; }
+double Vertice::get_longi() { return this->longi; }
+int Vertice::get_id() { return this->id;  }
+int Vertice::get_dem() { return this->dem; }
+int Vertice::get_etw() { return this->etw; }
+int Vertice::get_ltw() { return this->ltw; }
+int Vertice::get_dur() { return this->dur; }
+int Vertice::get_p() { return this->p;   }
+int Vertice::get_d() { return this->d;   }
 
 
-
-#endif // VERTICE_H_INCLUDED
+#endif // VERTICE_H_INCLUDED 
