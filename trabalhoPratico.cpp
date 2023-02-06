@@ -166,3 +166,59 @@ int main()
     
     return 0;
 }
+
+/*
+
+    /**
+     * @attribute MA matriz de adjacencias
+     * @attribute Vertice objeto do vertice que esta sendo explorado
+     * @attribute caminhao objeto do tipo caminhao que garda os dados como carga e posicao atual
+     * @attribute tempo variavel que guarda o tempo atual do codigo
+    verificaPontoEntrega(MA, Vertice, caminhao, tempo*){
+        // Se demanda > 0 (coleta), verificar a possivilidade de fazer o trajeto
+        if(Vertice.dem > 0){
+
+            // retorna true se a carga couber no caminhao
+            if(calcularCarga(caminhao)){
+
+                // Verifica se é possível chegar no destino a tempo. Se sim, retorna true e atualiza o tempo
+                if(calcularTempoTrajeto(tempo)){
+
+                    // Variavel que armazena o id do destino
+                    destino = (<id>+((SIZE-1)/2));
+
+                    // Tenta fazer a entraga e retorna false se nao conseguir
+                    if(!(fazerEntrega(MA, Vertice.id, destino, tempo)){
+                    
+                        // Se nao for possivel fazer a etrega dentro do tempo do vertice, adicionar a pilha de destinos do caminhao
+                        caminhao.destinos += destino;
+                    }
+                } else {
+
+                    // Se nao houver tempo para fazer a entraga, incluir a entrega na pilha de destinos do caminhao
+                    caminhao.destinos += destino;
+                }
+            } else {
+
+                // Chama a funcao verificaPontoEntrega() ate que apilha de destinos do caminhao esteja vazia
+                esvaziarCaminhao(MA, Vertice, caminhao, tempo*);
+            }
+        } else {
+
+            // Se se trata de um vertice de destino, verificar o ponto de origem dele e entao a possibilidade de fazer a entrega
+            origem = (<id>-((SIZE-1)/2));
+            verificaPontoEntrega(origem);
+        }
+    }
+
+    main(){
+        <leitura do arquivo e preenchimento das variaveis> (parte que ja foi feita)
+        
+        // Enquanto houver vertices nao vizitados, 
+        while(haVerticeNaoVizitado()){
+
+            // Chamar a funcao verificaPontoEntrega() para os vertices nao vizitados
+            verificaPontoEntrega(MA, VerticeNaoVizitado, caminhao, tempo*);
+        }
+    }
+*/

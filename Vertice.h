@@ -38,7 +38,6 @@ class Vertice
         int *distancias; //distancia entre os vertices; números inteiros representam os tempos de viagem entre cada par de locais na instância, medidos em minutos
 };
 
-
 void Vertice::setDistancias(int *distancias){ this->distancias = distancias; }
 void Vertice::set_id(int id){ this->id = id; }
 void Vertice::set_lat(double lat){ this->lat = lat; }
