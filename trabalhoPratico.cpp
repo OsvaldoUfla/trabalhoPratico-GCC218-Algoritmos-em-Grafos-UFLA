@@ -3,10 +3,9 @@
 #include <string>
 using namespace std;
 
-#include "instancia.h"
-#include "vertice.h"
+#include "Instancia.h"
+#include "Vertice.h"
 
-using namespace std;
 
 string campos [10];
 int coutCampos = 0;
