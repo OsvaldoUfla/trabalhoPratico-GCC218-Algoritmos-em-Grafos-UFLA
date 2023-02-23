@@ -92,7 +92,7 @@ void iniciarMatriz(int n){
     
     for(int i = 0; i < N; i++)
         for(int j = 0; j < N; j++)
-            MA[i][j] = 0;
+            MA[i][j] = NULL;
 }
 
 void insereAresta(int s, int t, int w){
@@ -183,163 +183,58 @@ int proxVerticeNaoVizitado(bool verticesVisitados[]){
     return -1;
 }
 
-bool vizitouTodos(bool verticesVisitados[]){
-    for(int i = 0; i < instancia.size; i++){
-        if(!verticesVisitados[i])
-            return true;
-    }
-    return false;
-}
+/*
 
-/**
- * se da tempo de ir e fazer a entrega
- */
-bool tempoAtualCoincide(int origem, int destino, int tempoAtual){
-    int aberturaDestino = instancia.vertices.at(destino).etw;
-    int fechamentoDestino = instancia.vertices.at(destino).ltw;
-    return (((tempoAtual + MA[origem][destino]) >= aberturaDestino) && ((tempoAtual + MA[origem][destino]) <= fechamentoDestino));
-}
+    /**
+     * @attribute MA matriz de adjacencias
+     * @attribute Vertice objeto do vertice que esta sendo explorado
+     * @attribute caminhao objeto do tipo caminhao que garda os dados como carga e posicao atual
+     * @attribute tempo variavel que guarda o tempo atual do codigo
+    verificaPontoEntrega(MA, Vertice, caminhao, tempo*){
+        // Se demanda > 0 (coleta), verificar a possivilidade de fazer o trajeto
+        if(Vertice.dem > 0){
 
-void fpc(bool verticesVisitados[], Caminhao& caminhao, int& tempoAtual){
-    int origem = caminhao.posicaoAtual;
-    
-    // Se o vertice atual ainda nao foi vizitado
-    if(!verticesVisitados[caminhao.posicaoAtual]){
+            // retorna true se a carga couber no caminhao
+            if(calcularCarga(caminhao)){
 
-        // Se se tratar de um vertice de origem
-        if(instancia.vertices.at(origem).dem > 0){
-            int destino = origem + (( instancia.size - 1 ) / 2);
+                // Verifica se é possível chegar no destino a tempo. Se sim, retorna true e atualiza o tempo
+                if(calcularTempoTrajeto(tempo)){
 
-            int aberturaDestino = instancia.vertices.at(origem).etw;
-            int fechamentoDestino = instancia.vertices.at(origem).ltw;
-            int espera = -1;
+                    // Variavel que armazena o id do destino
+                    destino = (<id>+((SIZE-1)/2));
 
-            // se o vertice destino vai estar aberto
-            if(((tempoAtual + MA[origem][destino]) >= aberturaDestino) && ((tempoAtual + MA[origem][destino]) <= fechamentoDestino)){
-                espera = 0;
-            }
-            else{
-                // Da para esperar o vertice abrir
-                if(((tempoAtual + MA[origem][destino]) <= fechamentoDestino)){
-                    espera = aberturaDestino - (tempoAtual + MA[origem][destino]);
-                }
-                // O vertice ja fechou
-                else{
-                    verticesVisitados[caminhao.posicaoAtual] = true;
-                    int mc=5000;
-                    int pmc;
-                    for(int i = 1; i < instancia.size; i++){
-                        if((MA[caminhao.posicaoAtual][i] < mc) && !verticesVisitados[i]){
-                            mc = MA[caminhao.posicaoAtual][i];
-                            pmc = i;
-                        }
+                    // Tenta fazer a entraga e retorna false se nao conseguir
+                    if(!(fazerEntrega(MA, Vertice.id, destino, tempo)){
+                    
+                        // Se nao for possivel fazer a etrega dentro do tempo do vertice, adicionar a pilha de destinos do caminhao
+                        caminhao.destinos += destino;
                     }
-                    caminhao.posicaoAtual = pmc;
-                    //considerar o tempo de viagem ate pmc
-                    fpc(verticesVisitados, caminhao, tempoAtual);
-                }
-            }
-            verticesVisitados[origem] = true;
-            verticesVisitados[destino] = true;
-            tempoAtual += (MA[origem][destino] + espera);
-            caminhao.tempoRestante -= (MA[origem][destino] + espera);
-        }
-        // Se trata-se de um vertice de destino
-        else if(instancia.vertices.at(origem).dem < 0){
-            origem = origem - (( instancia.size - 1 ) / 2);
-            int destino = caminhao.posicaoAtual;
-            verticesVisitados[origem] = true;
-            verticesVisitados[destino] = true;
-            tempoAtual += MA[origem][destino];
-            caminhao.tempoRestante -= MA[origem][destino];
-        }
-        // Se eh um vertice com demanda 0, buscar o vertice mais proximo que eh um vertice de demanda e nao foi vizitado 
-        else{
-            verticesVisitados[caminhao.posicaoAtual] = true;
-            int mc=5000;
-            int pmc;
-            for(int i = 1; i < instancia.size; i++){
-                if((MA[caminhao.posicaoAtual][i] < mc) && !verticesVisitados[i]){
-                    mc = MA[caminhao.posicaoAtual][i];
-                    pmc = i;
-                }
-            }
-            caminhao.posicaoAtual = pmc;
-            //considerar o tempo de viagem ate pmc
-            fpc(verticesVisitados, caminhao, tempoAtual);
-        }
-    } // Se o vertice ja tiver sido vizitado, buscar o vertice mais proximo que eh um vertice de demanda e nao foi vizitado 
-    else{
-        int mc=5000;
-        int pmc;
-        for(int i = 0; i < instancia.size; i++){
-            if((MA[caminhao.posicaoAtual][i] < mc) && !verticesVisitados[i]){
-                mc = MA[caminhao.posicaoAtual][i];
-                pmc = i;
-            }
-        }
-        caminhao.posicaoAtual = pmc;
-        //considerar o tempo de viagem ate pmc
-        fpc(verticesVisitados, caminhao, tempoAtual);
-    }
-}
+                } else {
 
-int tempoRestanteEhSuficiente(Caminhao caminhao, int tempoAtual){
-    for(int i = 1; i < instancia.size; i++){
-        if((MA[caminhao.posicaoAtual][i] < caminhao.tempoRestante) && tempoAtualCoincide(caminhao.posicaoAtual, i, tempoAtual)){
-            return i;
+                    // Se nao houver tempo para fazer a entraga, incluir a entrega na pilha de destinos do caminhao
+                    caminhao.destinos += destino;
+                }
+            } else {
+
+                // Chama a funcao verificaPontoEntrega() ate que apilha de destinos do caminhao esteja vazia
+                esvaziarCaminhao(MA, Vertice, caminhao, tempo*);
+            }
+        } else {
+
+            // Se se trata de um vertice de destino, verificar o ponto de origem dele e entao a possibilidade de fazer a entrega
+            origem = (<id>-((SIZE-1)/2));
+            verificaPontoEntrega(origem);
         }
     }
-    return -1;
-}
 
-int main()
-{    
-    leitura();
-
-    bool verticesVisitados[instancia.size];
-    preencherVerticesVisitados(verticesVisitados);
-    
-    Caminhao caminhao;
-    caminhao.cargaAtual = instancia.capacity;
-    caminhao.tempoRestante = instancia.routeTime;
-
-    int tempoAtual = 0;
-    
-    caminhao.posicaoAtual = 0;
-    while(vizitouTodos(verticesVisitados)){
-        fpc(verticesVisitados, caminhao, tempoAtual);
-        int proxVertice = tempoRestanteEhSuficiente(caminhao, tempoAtual);
+    main(){
+        <leitura do arquivo e preenchimento das variaveis> (parte que ja foi feita)
         
-        // o turno ja vai acabar e nao ha tempo para uma nova entrega
-        // nesse caso, procuro o proximo vertice para um novo caminhao
-        if(proxVertice == -1){
-            caminhao.cargaAtual = instancia.capacity;
-            caminhao.tempoRestante = instancia.routeTime;
-            caminhao.posicaoAtual = proxVerticeNaoVizitado(verticesVisitados);
-            tempoAtual = 0;
-        } // se ainda ouver tempo, vou para o prox vertice
-        else {
-            int distanciaColeta = 5000;
-            int coletaMaisProx = 0;
-            for(int i = 0; i < instancia.size; i++){
-                // busca pelo ponto de coleta mains proximo
-                if((MA[caminhao.posicaoAtual][i] < distanciaColeta) && (instancia.vertices.at(i).dem > 0) && (!verticesVisitados[i])){
-                    distanciaColeta = MA[caminhao.posicaoAtual][i];
-                    coletaMaisProx = i;
-                }
-            }
-            caminhao.posicaoAtual = coletaMaisProx;
+        // Enquanto houver vertices nao vizitados, 
+        while(haVerticeNaoVizitado()){
+
+            // Chamar a funcao verificaPontoEntrega() para os vertices nao vizitados
+            verificaPontoEntrega(MA, VerticeNaoVizitado, caminhao, tempo*);
         }
     }
-    
-    cout<<"Passou por todos os vertices"<<endl;
-
-    for(int i = 0; i < N; i++)
-        delete [] MA[i];
-    delete [] MA;
-
-    cout<<"Fechou o programa"<<endl;
-
-    return 0;
-}
+*/
