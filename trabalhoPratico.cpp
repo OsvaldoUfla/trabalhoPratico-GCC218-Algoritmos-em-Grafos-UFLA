@@ -1,27 +1,54 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
+
 using namespace std;
 
-#include "Instancia.h"
-#include "Vertice.h"
+struct Vertice{
+    int id;
+    double lat;
+    double longi;
+    int dem;
+    int etw;
+    int ltw;
+    int dur;
+    int p;
+    int d;
+    int *distancias;
+};
 
+struct Instancia{
+    string name;
+    string location;
+    string comment;
+    string type;
+    int size;
+    string distribution;
+    string depot;
+    int routeTime;
+    int timeWindow;
+    int capacity;
+    vector <Vertice> vertices;
+};
+
+struct Caminhao{
+    int cargaAtual;
+    int tempoRestante;
+    int posicaoAtual;
+};
 
 string campos [10];
 int coutCampos = 0;
 
-Instancia* i;
+Instancia instancia;
 
 int** MA;
 int N;
 
-/**
- * Preenche os dados da instancia
- * @param linha contendo os dados de uma linha especifica dos detalhes da instancia
- */
 void preencheInstancia(string linha){
     bool addChar = false;
-    for(int rl = 0; rl < linha.size(); rl++){
+    for(int rl = 0; rl < (int)linha.size(); rl++){
         if(addChar && coutCampos < 10)
             campos[coutCampos] += linha[rl];
         if(linha[rl] == ' ' && linha[rl - 1] == ':')
@@ -31,14 +58,10 @@ void preencheInstancia(string linha){
         coutCampos++;
 }
 
-/**
- * Preenche o vetor de vertices da classe Instancia. Objeto na varivael `i`
- * @param linha contendo os dados de cada vertice
- */
 void preencheNo(string linha){
     coutCampos = 0;
     string aux = "";
-    for(int i = 0; i < linha.size(); i++){
+    for(int i = 0; i < (int)linha.size(); i++){
         if(linha[i] != ' ')
             aux += linha[i];
         else {
@@ -47,23 +70,19 @@ void preencheNo(string linha){
             coutCampos++;
         }
     }
-    Vertice v;
-    v.set_id(stoi(campos[0]));
-    v.set_lat(stod(campos[1]));
-    v.set_longi(stod(campos[2]));
-    v.set_dem(stoi(campos[3]));
-    v.set_etw(stoi(campos[4]));
-    v.set_ltw(stoi(campos[5]));
-    v.set_dur(stoi(campos[6]));
-    v.set_p(stoi(campos[7]));
-    v.set_d(stoi(campos[8]));
-    i->setVertice(v);
+    Vertice vertice;
+    vertice.id = (stoi(campos[0]));
+    vertice.lat = (stod(campos[1]));
+    vertice.longi = (stod(campos[2]));
+    vertice.dem = (stoi(campos[3]));
+    vertice.etw = (stoi(campos[4]));
+    vertice.ltw = (stoi(campos[5]));
+    vertice.dur = (stoi(campos[6]));
+    vertice.p = (stoi(campos[7]));
+    vertice.d = (stoi(campos[8]));
+    instancia.vertices.push_back(vertice);
 }
 
-/**
- * Inicia a matriz de adjacencia com os valores NULL
- * @param n numero de vertices do grafo
- */
 void iniciarMatriz(int n){
     N = n;
     MA = new int*[N];
@@ -73,29 +92,17 @@ void iniciarMatriz(int n){
     
     for(int i = 0; i < N; i++)
         for(int j = 0; j < N; j++)
-            MA[i][j] = NULL;
+            MA[i][j] = 0;
 }
 
-/**
- * Insere uma nova aresta na matriz de adjacencia
- * Considera-se um grafo direcionado. Para grafo nao direcionado, adicionar a expressao MA[t][s] = w
- * @param s saida
- * @param t destino
- * @param s peso da aresta
- */
 void insereAresta(int s, int t, int w){
     MA[s][t] = w;
 }
 
-/**
- * Le a linha recebida e salva os valores contidos nela na MA
- * @param linha de dados com os valores em string
- * @param s vertice de origem
- */
 void lerInsere(string linha, int s){
     string aux = "";
     int auxCount = 0;
-    for(int i = 0; i < linha.size(); i++){
+    for(int i = 0; i < (int)linha.size(); i++){
         if(linha[i] != ' '){
             aux += linha[i];
         } else {
@@ -106,11 +113,6 @@ void lerInsere(string linha, int s){
     }
 }
 
-/**
- * --- FUNCAO USADA EXCLUSIVAMENTE PARA TESTES ---
- * Faz o teste para os 10 primeiros vertices, mostrando os pesos para as 10 primeiras arestas as quais eles ligam
- * Para mostrar a matriz inteira, basta trocas o valor 9 para a variavel `N`
- */
 void imprimirMatriz(){
     for(int i = 0; i < 9; i++){
         for(int j = 0; j < 9; j++)
@@ -119,13 +121,12 @@ void imprimirMatriz(){
     }
 }
 
-int main()
-{    
+void leitura(){
     string linha;
-    bool t = true;
     int altLeitura = 0;
     ifstream arquivo("instances/bar-n100-1.txt");
     int s = 0;
+
 
     if(arquivo){
         while(getline(arquivo, linha)){
@@ -134,13 +135,22 @@ int main()
                 
                 if(coutCampos == 10){
                     altLeitura++;
-                    i = new Instancia(campos[0],campos[1],campos[2],campos[3],stoi(campos[4]),campos[5],campos[6],stoi(campos[7]),stoi(campos[8]),stoi(campos[9]));
+                    instancia.name = campos[0];
+                    instancia.location = campos[1];
+                    instancia.comment = campos[2];
+                    instancia.type = campos[3];
+                    instancia.size = stoi(campos[4]);
+                    instancia.distribution = campos[5];
+                    instancia.depot = campos[6];
+                    instancia.routeTime = stoi(campos[7]);
+                    instancia.timeWindow = stoi(campos[8]);
+                    instancia.capacity = stoi(campos[9]);
                 }
             } else if(altLeitura == 1){
                 if(linha[0] == '0' || linha[0] == '1' || linha[0] == '2' || linha[0] == '3' || linha[0] == '4' || linha[0] == '5' || linha[0] == '6' || linha[0] == '7' || linha[0] == '8' || linha[0] == '9')
                     preencheNo(linha);
                 if(linha == "EDGES"){
-                    iniciarMatriz(i->getSize());
+                    iniciarMatriz(instancia.size);
                     altLeitura++;
                 }
             } else {
@@ -151,73 +161,185 @@ int main()
             }
         }
 
-        imprimirMatriz();// --- CHAMADA DE TESTE DA MATRIZ ---
-
-        delete i;
-
-        for(int i = 0; i < N; i++)
-            delete [] MA[i];
-        delete [] MA;
-
         arquivo.close();
     }
-    else cout << "Erro ao abrir o arquivo!" << endl;
-    
-    return 0;
+    else{
+        cout<<"Erro ao abrir o aquivo"<<endl;
+        arquivo.clear();
+    } 
 }
 
-/*
+void preencherVerticesVisitados(bool verticesVisitados[]){
+    for(int i = 0; i < instancia.size; i++){
+        verticesVisitados[i] = false;
+    }
+}
 
-    /**
-     * @attribute MA matriz de adjacencias
-     * @attribute Vertice objeto do vertice que esta sendo explorado
-     * @attribute caminhao objeto do tipo caminhao que garda os dados como carga e posicao atual
-     * @attribute tempo variavel que guarda o tempo atual do codigo
-    verificaPontoEntrega(MA, Vertice, caminhao, tempo*){
-        // Se demanda > 0 (coleta), verificar a possivilidade de fazer o trajeto
-        if(Vertice.dem > 0){
+int proxVerticeNaoVizitado(bool verticesVisitados[]){
+    for(int i = 0; i < instancia.size; i++){
+        if((!verticesVisitados[i]) && (instancia.vertices.at(i).dem > 0))//alem de nao tes sido vizitado, usar ele soh se for um vertice de demanda
+            return i;
+    }
+    return -1;
+}
 
-            // retorna true se a carga couber no caminhao
-            if(calcularCarga(caminhao)){
+bool vizitouTodos(bool verticesVisitados[]){
+    for(int i = 0; i < instancia.size; i++){
+        if(!verticesVisitados[i])
+            return true;
+    }
+    return false;
+}
 
-                // Verifica se é possível chegar no destino a tempo. Se sim, retorna true e atualiza o tempo
-                if(calcularTempoTrajeto(tempo)){
+/**
+ * se da tempo de ir e fazer a entrega
+ */
+bool tempoAtualCoincide(int origem, int destino, int tempoAtual){
+    int aberturaDestino = instancia.vertices.at(destino).etw;
+    int fechamentoDestino = instancia.vertices.at(destino).ltw;
+    return (((tempoAtual + MA[origem][destino]) >= aberturaDestino) && ((tempoAtual + MA[origem][destino]) <= fechamentoDestino));
+}
 
-                    // Variavel que armazena o id do destino
-                    destino = (<id>+((SIZE-1)/2));
+void fpc(bool verticesVisitados[], Caminhao& caminhao, int& tempoAtual){
+    int origem = caminhao.posicaoAtual;
+    
+    // Se o vertice atual ainda nao foi vizitado
+    if(!verticesVisitados[caminhao.posicaoAtual]){
 
-                    // Tenta fazer a entraga e retorna false se nao conseguir
-                    if(!(fazerEntrega(MA, Vertice.id, destino, tempo)){
-                    
-                        // Se nao for possivel fazer a etrega dentro do tempo do vertice, adicionar a pilha de destinos do caminhao
-                        caminhao.destinos += destino;
-                    }
-                } else {
+        // Se se tratar de um vertice de origem
+        if(instancia.vertices.at(origem).dem > 0){
+            int destino = origem + (( instancia.size - 1 ) / 2);
 
-                    // Se nao houver tempo para fazer a entraga, incluir a entrega na pilha de destinos do caminhao
-                    caminhao.destinos += destino;
-                }
-            } else {
+            int aberturaDestino = instancia.vertices.at(origem).etw;
+            int fechamentoDestino = instancia.vertices.at(origem).ltw;
+            int espera = -1;
 
-                // Chama a funcao verificaPontoEntrega() ate que apilha de destinos do caminhao esteja vazia
-                esvaziarCaminhao(MA, Vertice, caminhao, tempo*);
+            // se o vertice destino vai estar aberto
+            if(((tempoAtual + MA[origem][destino]) >= aberturaDestino) && ((tempoAtual + MA[origem][destino]) <= fechamentoDestino)){
+                espera = 0;
             }
-        } else {
+            else{
+                // Da para esperar o vertice abrir
+                if(((tempoAtual + MA[origem][destino]) <= fechamentoDestino)){
+                    espera = aberturaDestino - (tempoAtual + MA[origem][destino]);
+                }
+                // O vertice ja fechou
+                else{
+                    verticesVisitados[caminhao.posicaoAtual] = true;
+                    int mc=5000;
+                    int pmc;
+                    for(int i = 1; i < instancia.size; i++){
+                        if((MA[caminhao.posicaoAtual][i] < mc) && !verticesVisitados[i]){
+                            mc = MA[caminhao.posicaoAtual][i];
+                            pmc = i;
+                        }
+                    }
+                    caminhao.posicaoAtual = pmc;
+                    //considerar o tempo de viagem ate pmc
+                    fpc(verticesVisitados, caminhao, tempoAtual);
+                }
+            }
+            verticesVisitados[origem] = true;
+            verticesVisitados[destino] = true;
+            tempoAtual += (MA[origem][destino] + espera);
+            caminhao.tempoRestante -= (MA[origem][destino] + espera);
+        }
+        // Se trata-se de um vertice de destino
+        else if(instancia.vertices.at(origem).dem < 0){
+            origem = origem - (( instancia.size - 1 ) / 2);
+            int destino = caminhao.posicaoAtual;
+            verticesVisitados[origem] = true;
+            verticesVisitados[destino] = true;
+            tempoAtual += MA[origem][destino];
+            caminhao.tempoRestante -= MA[origem][destino];
+        }
+        // Se eh um vertice com demanda 0, buscar o vertice mais proximo que eh um vertice de demanda e nao foi vizitado 
+        else{
+            verticesVisitados[caminhao.posicaoAtual] = true;
+            int mc=5000;
+            int pmc;
+            for(int i = 1; i < instancia.size; i++){
+                if((MA[caminhao.posicaoAtual][i] < mc) && !verticesVisitados[i]){
+                    mc = MA[caminhao.posicaoAtual][i];
+                    pmc = i;
+                }
+            }
+            caminhao.posicaoAtual = pmc;
+            //considerar o tempo de viagem ate pmc
+            fpc(verticesVisitados, caminhao, tempoAtual);
+        }
+    } // Se o vertice ja tiver sido vizitado, buscar o vertice mais proximo que eh um vertice de demanda e nao foi vizitado 
+    else{
+        int mc=5000;
+        int pmc;
+        for(int i = 0; i < instancia.size; i++){
+            if((MA[caminhao.posicaoAtual][i] < mc) && !verticesVisitados[i]){
+                mc = MA[caminhao.posicaoAtual][i];
+                pmc = i;
+            }
+        }
+        caminhao.posicaoAtual = pmc;
+        //considerar o tempo de viagem ate pmc
+        fpc(verticesVisitados, caminhao, tempoAtual);
+    }
+}
 
-            // Se se trata de um vertice de destino, verificar o ponto de origem dele e entao a possibilidade de fazer a entrega
-            origem = (<id>-((SIZE-1)/2));
-            verificaPontoEntrega(origem);
+int tempoRestanteEhSuficiente(Caminhao caminhao, int tempoAtual){
+    for(int i = 1; i < instancia.size; i++){
+        if((MA[caminhao.posicaoAtual][i] < caminhao.tempoRestante) && tempoAtualCoincide(caminhao.posicaoAtual, i, tempoAtual)){
+            return i;
         }
     }
+    return -1;
+}
 
-    main(){
-        <leitura do arquivo e preenchimento das variaveis> (parte que ja foi feita)
+int main()
+{    
+    leitura();
+
+    bool verticesVisitados[instancia.size];
+    preencherVerticesVisitados(verticesVisitados);
+    
+    Caminhao caminhao;
+    caminhao.cargaAtual = instancia.capacity;
+    caminhao.tempoRestante = instancia.routeTime;
+
+    int tempoAtual = 0;
+    
+    caminhao.posicaoAtual = 0;
+    while(vizitouTodos(verticesVisitados)){
+        fpc(verticesVisitados, caminhao, tempoAtual);
+        int proxVertice = tempoRestanteEhSuficiente(caminhao, tempoAtual);
         
-        // Enquanto houver vertices nao vizitados, 
-        while(haVerticeNaoVizitado()){
-
-            // Chamar a funcao verificaPontoEntrega() para os vertices nao vizitados
-            verificaPontoEntrega(MA, VerticeNaoVizitado, caminhao, tempo*);
+        // o turno ja vai acabar e nao ha tempo para uma nova entrega
+        // nesse caso, procuro o proximo vertice para um novo caminhao
+        if(proxVertice == -1){
+            caminhao.cargaAtual = instancia.capacity;
+            caminhao.tempoRestante = instancia.routeTime;
+            caminhao.posicaoAtual = proxVerticeNaoVizitado(verticesVisitados);
+            tempoAtual = 0;
+        } // se ainda ouver tempo, vou para o prox vertice
+        else {
+            int distanciaColeta = 5000;
+            int coletaMaisProx = 0;
+            for(int i = 0; i < instancia.size; i++){
+                // busca pelo ponto de coleta mains proximo
+                if((MA[caminhao.posicaoAtual][i] < distanciaColeta) && (instancia.vertices.at(i).dem > 0) && (!verticesVisitados[i])){
+                    distanciaColeta = MA[caminhao.posicaoAtual][i];
+                    coletaMaisProx = i;
+                }
+            }
+            caminhao.posicaoAtual = coletaMaisProx;
         }
     }
-*/
+    
+    cout<<"Passou por todos os vertices"<<endl;
+
+    for(int i = 0; i < N; i++)
+        delete [] MA[i];
+    delete [] MA;
+
+    cout<<"Fechou o programa"<<endl;
+
+    return 0;
+}
