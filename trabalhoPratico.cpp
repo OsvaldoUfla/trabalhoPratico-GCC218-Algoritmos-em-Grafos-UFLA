@@ -92,7 +92,7 @@ void iniciarMatriz(int n){
     
     for(int i = 0; i < N; i++)
         for(int j = 0; j < N; j++)
-            MA[i][j] = NULL;
+            MA[i][j] = 0;
 }
 
 void insereAresta(int s, int t, int w){
@@ -169,12 +169,6 @@ void leitura(){
     } 
 }
 
-void preencherVerticesVisitados(bool verticesVisitados[]){
-    for(int i = 0; i < instancia.size; i++){
-        verticesVisitados[i] = false;
-    }
-}
-
 int proxVerticeNaoVizitado(bool verticesVisitados[]){
     for(int i = 0; i < instancia.size; i++){
         if((!verticesVisitados[i]) && (instancia.vertices.at(i).dem > 0))//alem de nao tes sido vizitado, usar ele soh se for um vertice de demanda
@@ -183,8 +177,295 @@ int proxVerticeNaoVizitado(bool verticesVisitados[]){
     return -1;
 }
 
-/*
+bool vizitouTodos(bool verticesVisitados[]){
+    for(int i = 0; i < instancia.size; i++){
+        if(!verticesVisitados[i])
+            return false;
+    }
+    return true;
+}
 
+void fpc(bool verticesVisitados[], Caminhao& caminhao, int& tempoAtual){
+    int origem = caminhao.posicaoAtual;
+    
+    // Se o vertice atual ainda nao foi vizitado
+    if(!verticesVisitados[caminhao.posicaoAtual]){
+
+        // Se se tratar de um vertice de origem
+        if(instancia.vertices.at(origem).dem > 0){
+            int destino = origem + (( instancia.size - 1 ) / 2);
+
+            int aberturaDestino = instancia.vertices.at(origem).etw;
+            int fechamentoDestino = instancia.vertices.at(origem).ltw;
+            int espera = -1;
+
+            // se o vertice destino vai estar aberto
+            if(((tempoAtual + MA[origem][destino]) >= aberturaDestino) && ((tempoAtual + MA[origem][destino]) <= fechamentoDestino)){
+                espera = 0;
+            }
+            else{
+                // Da para esperar o vertice abrir
+                if(((tempoAtual + MA[origem][destino]) <= fechamentoDestino)){
+                    espera = aberturaDestino - (tempoAtual + MA[origem][destino]);
+                }
+                // O vertice ja fechou
+                else{
+                    verticesVisitados[caminhao.posicaoAtual] = true;
+                    int mc=5000;
+                    int pmc;
+                    for(int i = 1; i < instancia.size; i++){
+                        if((MA[caminhao.posicaoAtual][i] < mc) && !verticesVisitados[i]){
+                            mc = MA[caminhao.posicaoAtual][i];
+                            pmc = i;
+                        }
+                    }
+                    caminhao.posicaoAtual = pmc;
+                    //considerar o tempo de viagem ate pmc
+                    fpc(verticesVisitados, caminhao, tempoAtual);
+                }
+            }
+            verticesVisitados[origem] = true;
+            verticesVisitados[destino] = true;
+            tempoAtual += (MA[origem][destino] + espera);
+            caminhao.tempoRestante -= (MA[origem][destino] + espera);
+        }
+        // Se trata-se de um vertice de destino
+        else if(instancia.vertices.at(origem).dem < 0){
+            origem = origem - (( instancia.size - 1 ) / 2);
+            int destino = caminhao.posicaoAtual;
+            verticesVisitados[origem] = true;
+            verticesVisitados[destino] = true;
+            tempoAtual += MA[origem][destino];
+            caminhao.tempoRestante -= MA[origem][destino];
+        }
+        // Se eh um vertice com demanda 0, buscar o vertice mais proximo que eh um vertice de demanda e nao foi vizitado 
+        else{
+            verticesVisitados[caminhao.posicaoAtual] = true;
+            int mc=5000;
+            int pmc;
+            for(int i = 1; i < instancia.size; i++){
+                if((MA[caminhao.posicaoAtual][i] < mc) && !verticesVisitados[i]){
+                    mc = MA[caminhao.posicaoAtual][i];
+                    pmc = i;
+                }
+            }
+            caminhao.posicaoAtual = pmc;
+            //considerar o tempo de viagem ate pmc
+            fpc(verticesVisitados, caminhao, tempoAtual);
+        }
+    } // Se o vertice ja tiver sido vizitado, buscar o vertice mais proximo que eh um vertice de demanda e nao foi vizitado 
+    else{
+        int mc=5000;
+        int pmc;
+        for(int i = 0; i < instancia.size; i++){
+            if((MA[caminhao.posicaoAtual][i] < mc) && !verticesVisitados[i]){
+                mc = MA[caminhao.posicaoAtual][i];
+                pmc = i;
+            }
+        }
+        caminhao.posicaoAtual = pmc;
+        //considerar o tempo de viagem ate pmc
+        fpc(verticesVisitados, caminhao, tempoAtual);
+    }
+}
+
+int tempoRestanteEhSuficiente(Caminhao caminhao, int tempoAtual){
+    for(int i = 1; i < instancia.size; i++){
+        if((MA[caminhao.posicaoAtual][i] < caminhao.tempoRestante)){
+            return i;
+        }
+    }
+    return -1;
+}
+
+Caminhao caminho(Caminhao caminhao, bool verticesVisitados[]){
+    int s = caminhao.posicaoAtual;
+    int t = s + (( instancia.size - 1 ) / 2);
+
+    if((instancia.vertices.at(s).dem > 0) && (!verticesVisitados[s])){
+        for(int i = 0; i < instancia.size; i++){
+            if(instancia.vertices.at(i).dem > 0){
+                if(MA[s][i] < MA[s][t]){
+                    int ti = i + (( instancia.size - 1 ) / 2);
+                    if((MA[s][i] + MA[i][ti] + MA[ti][t]) < (MA[s][i] + MA[i][t] + MA[t][ti])){
+                        if((MA[s][i] + MA[i][ti] + MA[ti][t]) < caminhao.tempoRestante){
+                            verticesVisitados[s] = true;
+                            verticesVisitados[i] = true;
+                            verticesVisitados[t] = true;
+                            verticesVisitados[ti] = true;
+
+                            cout << instancia.vertices.at(s).id <<  " - " <<  instancia.vertices.at(i).id << endl;
+                            cout << instancia.vertices.at(i).id <<  " - " <<  instancia.vertices.at(ti).id << endl;
+                            cout << instancia.vertices.at(ti).id <<  " - " <<  instancia.vertices.at(t).id << endl;
+                            s = t;
+                            caminhao.posicaoAtual = t;
+                            caminhao.tempoRestante -= (MA[s][i] + MA[i][ti] + MA[ti][t]);
+                        }
+                    }
+                    else if((MA[s][i] + MA[i][t] + MA[t][ti]) < caminhao.tempoRestante){
+                        verticesVisitados[s] = true;
+                        verticesVisitados[i] = true;
+                        verticesVisitados[t] = true;
+                        verticesVisitados[ti] = true;
+
+                        cout << instancia.vertices.at(s).id <<  " - " <<  instancia.vertices.at(i).id << endl;
+                        cout << instancia.vertices.at(i).id <<  " - " <<  instancia.vertices.at(t).id << endl;
+                        cout << instancia.vertices.at(t).id <<  " - " <<  instancia.vertices.at(ti).id << endl;
+                        s = ti;
+                        caminhao.posicaoAtual = ti;
+                        caminhao.tempoRestante -= (MA[s][i] + MA[i][t] + MA[t][ti]);
+                    }
+                }
+            }
+        }
+    }
+    else{
+        int distanciaColeta = 5000;
+        int coletaMaisProx = 0;
+        if(s == 0)
+            verticesVisitados[0] = true;
+
+        for(int i = 0; i < instancia.size; i++){
+            if((MA[s][i] < distanciaColeta) && (instancia.vertices.at(i).dem > 0) && (!verticesVisitados[i])){
+                distanciaColeta = MA[s][i];
+                coletaMaisProx = i;
+            }
+        }
+        if(coletaMaisProx > 0){
+            cout << instancia.vertices.at(s).id <<  " - " <<  instancia.vertices.at(coletaMaisProx).id << endl;
+            caminhao.posicaoAtual = coletaMaisProx;
+            caminhao.tempoRestante -= (MA[s][coletaMaisProx]);
+            caminho(caminhao, verticesVisitados);
+        }
+    }
+    return caminhao;
+}
+
+void cmn(Caminhao caminhao, bool verticesVisitados[]) {
+    while (!vizitouTodos(verticesVisitados) && caminhao.tempoRestante > 0) {
+        int s = caminhao.posicaoAtual;
+        int t = s + ((instancia.size - 1) / 2);
+
+        if ((instancia.vertices.at(s).dem > 0) && (!verticesVisitados[s])) {
+            for (int i = 0; i < instancia.size; i++) {
+                if (instancia.vertices.at(i).dem > 0) {
+                    if (MA[s][i] < MA[s][t]) {
+                        int ti = i + ((instancia.size - 1) / 2);
+                        if ((MA[s][i] + MA[i][ti] + MA[ti][t]) < (MA[s][i] + MA[i][t] + MA[t][ti])) {
+                            if ((MA[s][i] + MA[i][ti] + MA[ti][t]) < caminhao.tempoRestante) {
+                                verticesVisitados[s] = true;
+                                verticesVisitados[i] = true;
+                                verticesVisitados[t] = true;
+                                verticesVisitados[ti] = true;
+
+                                cout << instancia.vertices.at(s).id << " - " << instancia.vertices.at(i).id << endl;
+                                cout << instancia.vertices.at(i).id << " - " << instancia.vertices.at(ti).id << endl;
+                                cout << instancia.vertices.at(ti).id << " - " << instancia.vertices.at(t).id << endl;
+                                s = t;
+                                caminhao.posicaoAtual = t;
+                                caminhao.tempoRestante -= (MA[s][i] + MA[i][ti] + MA[ti][t]);
+                            }
+                        }
+                        else if ((MA[s][i] + MA[i][t] + MA[t][ti]) < caminhao.tempoRestante) {
+                            verticesVisitados[s] = true;
+                            verticesVisitados[i] = true;
+                            verticesVisitados[t] = true;
+                            verticesVisitados[ti] = true;
+
+                            cout << instancia.vertices.at(s).id <<  " - " <<  instancia.vertices.at(i).id << endl;
+                            cout << instancia.vertices.at(i).id <<  " - " <<  instancia.vertices.at(t).id << endl;
+                            cout << instancia.vertices.at(t).id <<  " - " <<  instancia.vertices.at(ti).id << endl;
+                            s = ti;
+                            caminhao.posicaoAtual = ti;
+                            caminhao.tempoRestante -= (MA[s][i] + MA[i][t] + MA[t][ti]);
+                        }
+                    }
+                }
+            }
+        }
+        else{
+            int distanciaColeta = 5000;
+            int coletaMaisProx = 0;
+            //if(s == 0)
+                verticesVisitados[caminhao.posicaoAtual] = true;
+
+            for(int i = 0; i < instancia.size; i++){
+                if((MA[s][i] < distanciaColeta) && (instancia.vertices.at(i).dem > 0) && (!verticesVisitados[i])){
+                    distanciaColeta = MA[s][i];
+                    coletaMaisProx = i;
+                }
+            }
+            if(coletaMaisProx > 0){
+                cout << instancia.vertices.at(s).id <<  " - " <<  instancia.vertices.at(coletaMaisProx).id << endl;
+                caminhao.posicaoAtual = coletaMaisProx;
+                caminhao.tempoRestante -= (MA[s][coletaMaisProx]);
+            }
+        }
+    }
+}
+
+int main()
+{    
+    leitura();
+
+    bool verticesVisitados[instancia.size];
+
+    // marca todos os vertices como nao vizitados
+    for(int i = 0; i < instancia.size; i++){
+        verticesVisitados[i] = false;
+    }
+    
+    Caminhao caminhao;
+    caminhao.cargaAtual = instancia.capacity;
+    caminhao.tempoRestante = instancia.routeTime;
+
+    int tempoAtual = 0;
+    
+    caminhao.posicaoAtual = 0;
+
+    cout<<"vai entrar no while"<<endl;
+    cmn(caminhao, verticesVisitados);
+    /*while(!vizitouTodos(verticesVisitados)){
+        fpc(verticesVisitados, caminhao, tempoAtual);
+        int proxVertice = tempoRestanteEhSuficiente(caminhao, tempoAtual);
+
+        // o turno ja vai acabar e nao ha tempo para uma nova entrega
+        // nesse caso, procuro o proximo vertice para um novo caminhao
+        if(proxVertice == -1){
+            caminhao.cargaAtual = instancia.capacity;
+            caminhao.tempoRestante = instancia.routeTime;
+            caminhao.posicaoAtual = proxVerticeNaoVizitado(verticesVisitados);
+            tempoAtual = 0;
+        } // se ainda ouver tempo, vou para o prox vertice
+        else {
+            int distanciaColeta = 5000;
+            int coletaMaisProx = 0;
+            for(int i = 0; i < instancia.size; i++){
+                // busca pelo ponto de coleta mains proximo
+                if((MA[caminhao.posicaoAtual][i] < distanciaColeta) && (instancia.vertices.at(i).dem > 0) && (!verticesVisitados[i])){
+                    distanciaColeta = MA[caminhao.posicaoAtual][i];
+                    coletaMaisProx = i;
+                }
+            }
+            caminhao.posicaoAtual = coletaMaisProx;
+        }
+        caminhao = caminho(caminhao, verticesVisitados);
+        caminhao.cargaAtual = instancia.capacity;
+        caminhao.tempoRestante = instancia.routeTime;
+        caminhao.posicaoAtual = 0;
+    }*/
+    
+    cout<<"Passou por todos os vertices"<<endl;
+
+    for(int i = 0; i < N; i++)
+        delete [] MA[i];
+    delete [] MA;
+
+    cout<<"Fechou o programa"<<endl;
+
+    return 0;
+}
+/*
     /**
      * @attribute MA matriz de adjacencias
      * @attribute Vertice objeto do vertice que esta sendo explorado
