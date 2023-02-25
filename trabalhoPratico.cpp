@@ -121,10 +121,10 @@ void imprimirMatriz(){
     }
 }
 
-void leitura(){
+void leitura(string nmArq){
     string linha;
     int altLeitura = 0;
-    ifstream arquivo("instances/bar-n100-1.txt");
+    ifstream arquivo(nmArq);
     int s = 0;
 
 
@@ -207,8 +207,9 @@ int dist(Caminhao caminhao, int tempoAtual){
     return result;
 }
 int cnt = 1;
+int totalTempo = 0;
 void caminho(Caminhao caminhao, bool verticesVisitados[]) {
-    cout<<"Caminhao "<<cnt<<endl;cnt++;
+    //cout << "Caminhao " << cnt << endl; cnt++;
     int tempoAtual = 0;
     while ((!vizitouTodos(verticesVisitados)) && caminhao.tempoRestante > 20) {
         int s = caminhao.posicaoAtual;
@@ -231,27 +232,30 @@ void caminho(Caminhao caminhao, bool verticesVisitados[]) {
                         espera = instancia.vertices.at(destinoMc).etw - (MA[s][mc] + MA[mc][destinoMc] + tempoAtual);
                     
                     if((caminhao.tempoRestante - (MA[s][mc] + MA[mc][destinoMc] + espera)) > MA[t][0]){
-                        cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(mc).id << endl;
+                        //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(mc).id << endl;
                         caminhao.tempoRestante -= MA[s][mc];
                         caminhao.posicaoAtual = mc;
                         s = mc;
                     }
                     else{
+                        totalTempo += (instancia.routeTime - caminhao.tempoRestante);
                         caminhao.tempoRestante = 0;
                         caminhao.posicaoAtual = 0;
-                        cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
+                        //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
                     }
                     if(s == mc){
+                        totalTempo += (instancia.routeTime - caminhao.tempoRestante);
                         caminhao.tempoRestante = 0;
                         caminhao.posicaoAtual = 0;
-                        cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
+                        //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
                         s = 0;
                     }
                 }
                 else{
+                    totalTempo += (instancia.routeTime - caminhao.tempoRestante);
                     caminhao.tempoRestante = 0;
                     caminhao.posicaoAtual = 0;
-                    cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
+                    //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
                 }
             }else{
                 verticesVisitados[s] = true;
@@ -259,7 +263,7 @@ void caminho(Caminhao caminhao, bool verticesVisitados[]) {
                 caminhao.tempoRestante -= ((MA[s][t]) + espera);
                 
                 tempoAtual += ((MA[s][t]) + espera);
-                cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(t).id << endl;
+                //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(t).id << endl;
                 s = t;
                 caminhao.posicaoAtual = t;
             }           
@@ -289,13 +293,14 @@ void caminho(Caminhao caminhao, bool verticesVisitados[]) {
             if(coletaMaisProx > 0){
                 int destinoColetaMaisProx = coletaMaisProx + ((instancia.size - 1) / 2);
                 if((caminhao.tempoRestante - (MA[s][coletaMaisProx] + MA[coletaMaisProx][0] + MA[coletaMaisProx][destinoColetaMaisProx])) < MA[s][0]){
+                    totalTempo += (instancia.routeTime - caminhao.tempoRestante);
                     caminhao.tempoRestante = 0;
                     caminhao.posicaoAtual = 0;
-                    cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
+                    //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
                 }
                 else{
                     caminhao.tempoRestante -= (MA[s][coletaMaisProx]);
-                    cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(coletaMaisProx).id << endl;
+                    //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(coletaMaisProx).id << endl;
 
                     s = coletaMaisProx;
                     caminhao.posicaoAtual = coletaMaisProx;
@@ -303,17 +308,18 @@ void caminho(Caminhao caminhao, bool verticesVisitados[]) {
             }
         }
         if(vizitouTodos(verticesVisitados) && (caminhao.tempoRestante > 20)){
+            totalTempo += (instancia.routeTime - caminhao.tempoRestante);
             caminhao.tempoRestante = 0;
             caminhao.posicaoAtual = 0;
-            cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
+            //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
         }
     }
-    cout<<"Terminando o exercicio"<<endl;
+    //cout << "Terminando o exercicio" << endl;
 }
 
 int main()
 {    
-    leitura();
+    leitura("instances/poa-n100-6.txt");
 
     bool verticesVisitados[instancia.size];
 
@@ -331,7 +337,8 @@ int main()
         caminho(caminhao, verticesVisitados);
     }
 
-    cout<<"Deve ser -1: " << proxVerticeNaoVizitado(verticesVisitados) << endl;
+    //cout<<"Deve ser -1: " << proxVerticeNaoVizitado(verticesVisitados) << endl;
+    cout<<cnt<<" | "<<totalTempo<<endl;
 
     for(int i = 0; i < N; i++)
         delete [] MA[i];
