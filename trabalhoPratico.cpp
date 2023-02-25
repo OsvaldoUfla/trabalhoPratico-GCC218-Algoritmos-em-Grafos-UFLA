@@ -185,18 +185,57 @@ bool vizitouTodos(bool verticesVisitados[]){
     return true;
 }
 
-void cmn(Caminhao caminhao, bool verticesVisitados[], int& tempoAtual) {
-    while (caminhao.tempoRestante > 20) {//TEMPO DO CAMINGAO
+void cmn(Caminhao caminhao, bool verticesVisitados[]) {
+    int tempoAtual = 0;
+    while ((!vizitouTodos(verticesVisitados)) && caminhao.tempoRestante > 20) {//TEMPO DO CAMINGAO
         int s = caminhao.posicaoAtual;
         int t = s + ((instancia.size - 1) / 2);
 
         if ((instancia.vertices.at(s).dem > 0) && (!verticesVisitados[s])) {
-            verticesVisitados[s] = true;
-            verticesVisitados[t] = true;
-            caminhao.tempoRestante -= (MA[s][t]);
-            cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(t).id << endl;
-            s = t;
-            caminhao.posicaoAtual = t;
+            int espera = 0;
+
+            if((MA[s][t] + tempoAtual) < instancia.vertices.at(t).etw){
+                espera = (instancia.vertices.at(t).etw + (MA[s][t] + tempoAtual));
+            }
+
+            if((caminhao.tempoRestante - ((MA[s][t]) + espera)) > 0){
+                verticesVisitados[s] = true;
+                verticesVisitados[t] = true;
+                caminhao.tempoRestante -= ((MA[s][t]) + espera);
+                
+                tempoAtual += ((MA[s][t]) + espera);
+                cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(t).id << endl;
+                s = t;
+                caminhao.posicaoAtual = t;
+            }else{
+                Caminhao nhao;
+                nhao.posicaoAtual = s;
+                nhao.tempoRestante = instancia.routeTime;
+                nhao.cargaAtual = instancia.capacity;
+
+                cout<<"Criando um novo caminhao para fazer o percurso"<<endl;
+                cmn(nhao, verticesVisitados);
+                cout<<"Voltando para o caminhao anterior"<<endl;
+
+                int distanciaColeta = 5000;
+                int coletaMaisProx = 0;
+
+                for(int i = 0; i < instancia.size; i++){
+                    if((MA[s][i] < distanciaColeta) && (instancia.vertices.at(i).dem > 0) && (!verticesVisitados[i])){
+                        distanciaColeta = MA[s][i];
+                        coletaMaisProx = i;
+                    }
+                }
+
+                if(coletaMaisProx > 0){
+                    caminhao.tempoRestante -= (MA[s][coletaMaisProx]);
+                    cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(coletaMaisProx).id << endl;
+
+                    s = coletaMaisProx;
+                    caminhao.posicaoAtual = coletaMaisProx;
+                }
+            }
+           
         }
         else{
             int distanciaColeta = 5000;
@@ -235,13 +274,11 @@ int main()
     Caminhao caminhao;
     caminhao.cargaAtual = instancia.capacity;
     caminhao.tempoRestante = instancia.routeTime;
-
-    int tempoAtual = 0;
     
     caminhao.posicaoAtual = 0;
 
     while(!vizitouTodos(verticesVisitados)){
-        cmn(caminhao, verticesVisitados, tempoAtual);
+        cmn(caminhao, verticesVisitados);
     }
 
     cout<<"Deve ser -1: " << proxVerticeNaoVizitado(verticesVisitados) << endl;
