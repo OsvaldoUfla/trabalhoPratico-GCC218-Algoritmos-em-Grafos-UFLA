@@ -1,52 +1,20 @@
-    /**
-     * @attribute MA matriz de adjacencias
-     * @attribute Vertice objeto do vertice que esta sendo explorado
-     * @attribute caminhao objeto do tipo caminhao que garda os dados como carga e posicao atual
-     * @attribute tempo variavel que guarda o tempo atual do codigo
-    verificaPontoEntrega(MA, Vertice, caminhao, tempo*){
-        // Se demanda > 0 (coleta), verificar a possivilidade de fazer o trajeto
-        if(Vertice.dem > 0){
-
-            // retorna true se a carga couber no caminhao
-            if(calcularCarga(caminhao)){
-
-                // Verifica se é possível chegar no destino a tempo. Se sim, retorna true e atualiza o tempo
-                if(calcularTempoTrajeto(tempo)){
-
-                    // Variavel que armazena o id do destino
-                    destino = (<id>+((SIZE-1)/2));
-
-                    // Tenta fazer a entraga e retorna false se nao conseguir
-                    if(!(fazerEntrega(MA, Vertice.id, destino, tempo)){
-                    
-                        // Se nao for possivel fazer a etrega dentro do tempo do vertice, adicionar a pilha de destinos do caminhao
-                        caminhao.destinos += destino;
-                    }
-                } else {
-
-                    // Se nao houver tempo para fazer a entraga, incluir a entrega na pilha de destinos do caminhao
-                    caminhao.destinos += destino;
-                }
-            } else {
-
-                // Chama a funcao verificaPontoEntrega() ate que apilha de destinos do caminhao esteja vazia
-                esvaziarCaminhao(MA, Vertice, caminhao, tempo*);
-            }
-        } else {
-
-            // Se se trata de um vertice de destino, verificar o ponto de origem dele e entao a possibilidade de fazer a entrega
-            origem = (<id>-((SIZE-1)/2));
-            verificaPontoEntrega(origem);
-        }
-    }
-
-    main(){
-        <leitura do arquivo e preenchimento das variaveis> (parte que ja foi feita)
-        
-        // Enquanto houver vertices nao vizitados, 
-        while(haVerticeNaoVizitado()){
-
-            // Chamar a funcao verificaPontoEntrega() para os vertices nao vizitados
-            verificaPontoEntrega(MA, VerticeNaoVizitado, caminhao, tempo*);
-        }
-    }
+1. Início da função caminho(caminhao, verticesVisitados)
+2. Definir tempoAtual como 0
+3. Enquanto não visitou todos os vértices e caminhao.tempoRestante > 20
+4. Se a posição atual do caminhão (s) tiver demanda e ainda não foi visitada
+5. Definir t como a próxima localização a ser visitada
+6. Se o tempo de chegada ao próximo ponto (MA[s][t] + tempoAtual) for menor que o tempo máximo permitido para a chegada ao próximo ponto (instancia.vertices.at(t).etw), calcular o tempo de espera necessário (espera = instancia.vertices.at(t).etw + (MA[s][t] + tempoAtual) )
+7. Se o tempo restante do caminhão (caminhao.tempoRestante - (MA[s][t] + espera)) for maior que o tempo máximo permitido para a chegada ao depósito (MA[t][0])
+8. Calcular a distância até o próximo local de coleta (mc) e a distância até o destino final do caminhão (destinoMc)
+9. Se a chegada ao destino final do caminhão respeitar o tempo máximo permitido (caminhao.tempoRestante - (MA[s][mc] + MA[mc][destinoMc] + espera) > MA[t][0])Imprimir a rota do caminhão até o local de coleta mais próximo (mc) e atualizar sua posição e tempo restante
+10.Se a posição atual do caminhão for igual a mc, imprimir a rota de volta para o depósito e atualizar sua posição e tempo restante
+11. Se a distância até o local de coleta mais próximo (mc) for 0, imprimir a rota de volta para o depósito e atualizar sua posição e tempo restante
+12. Se o tempo restante do caminhão for menor que o tempo máximo permitido para a chegada ao depósito (caminhao.tempoRestante < MA[t][0]), imprimir a rota de volta para o depósito e atualizar sua posição e tempo restante
+13. Caso contrário, marcar os vértices s e t como visitados, atualizar a posição do caminhão para t, e atualizar tempo restante do caminhão e tempo atual
+14. Caso contrário, se a posição atual do caminhão não tiver demanda, procurar o local de coleta mais próximo (coletaMaisProx) que ainda não foi visitado
+15. Se existir um local de coleta mais próximo não visitado
+16. Calcular a distância até o destino da coleta mais próxima (destinoColetaMaisProx)
+17. Se o tempo restante do caminhão for menor que o tempo necessário para visitar a coleta mais próxima e voltar para o depósito (MA[s][coletaMaisProx] + MA[coletaMaisProx][0] + MA[coletaMaisProx][destinoColetaMaisProx] ), imprimir a rota de volta para o depósito e atualizar sua posição e tempo restante
+18. Caso contrário, imprimir a rota do caminhão até o local de coleta mais próximo e atualizar sua posição e tempo restante
+19. Se todos os vértices foram visitados, imprimir a rota de volta para o depósito
+20 Fim da função caminho(caminhao, verticesVisitados)
