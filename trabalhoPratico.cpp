@@ -206,10 +206,11 @@ int dist(Caminhao caminhao, int tempoAtual){
 
     return result;
 }
-
+int cnt = 1;
 void caminho(Caminhao caminhao, bool verticesVisitados[]) {
+    cout<<"Caminhao "<<cnt<<endl;cnt++;
     int tempoAtual = 0;
-    while ((!vizitouTodos(verticesVisitados)) && caminhao.tempoRestante > 20) {//TEMPO DO CAMINGAO
+    while ((!vizitouTodos(verticesVisitados)) && caminhao.tempoRestante > 20) {
         int s = caminhao.posicaoAtual;
         int t = s + ((instancia.size - 1) / 2);
 
@@ -230,7 +231,7 @@ void caminho(Caminhao caminhao, bool verticesVisitados[]) {
                         espera = instancia.vertices.at(destinoMc).etw - (MA[s][mc] + MA[mc][destinoMc] + tempoAtual);
                     
                     if((caminhao.tempoRestante - (MA[s][mc] + MA[mc][destinoMc] + espera)) > MA[t][0]){
-                        cout << "->mc " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(mc).id << endl;
+                        cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(mc).id << endl;
                         caminhao.tempoRestante -= MA[s][mc];
                         caminhao.posicaoAtual = mc;
                         s = mc;
@@ -281,7 +282,6 @@ void caminho(Caminhao caminhao, bool verticesVisitados[]) {
                         espera = esp;
                         distanciaColeta = MA[s][i];
                         coletaMaisProx = i;
-                        cout<<"vertice de demanda mais proximo, que esta aberto e nao foi vizitado"<<endl;
                     }
                 }
             }
