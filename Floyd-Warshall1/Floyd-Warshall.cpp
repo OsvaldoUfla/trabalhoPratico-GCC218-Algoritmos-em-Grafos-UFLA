@@ -30,6 +30,6 @@ void leitura(string nmArq){
 }
 
 int main (){
-    leitura("01.txt");
+ //   leitura("01.txt");
     return 0;
 }
