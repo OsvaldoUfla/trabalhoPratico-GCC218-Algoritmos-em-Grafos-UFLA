@@ -265,19 +265,29 @@ void caminho(Caminhao caminhao, bool verticesVisitados[]) {
         }
         else{
             int distanciaColeta = 5000;
+            int espera = 5000;
             int coletaMaisProx = 0;
             if(s == 0)
                 verticesVisitados[s] = true;
 
-            for(int i = 0; i < instancia.size; i++){
+            for(int i = 1; i < instancia.size; i++){
+                int ti = i + ((instancia.size - 1) / 2);
                 if((MA[s][i] < distanciaColeta) && (instancia.vertices.at(i).dem > 0) && (!verticesVisitados[i])){
-                    distanciaColeta = MA[s][i];
-                    coletaMaisProx = i;
+                    int esp; 
+                    if((tempoAtual + MA[s][i]) > instancia.vertices.at(i).etw){
+                        esp = instancia.vertices.at(i).etw - (tempoAtual + MA[s][i]);
+                    }
+                    if(esp < espera){
+                        espera = esp;
+                        distanciaColeta = MA[s][i];
+                        coletaMaisProx = i;
+                        cout<<"vertice de demanda mais proximo, que esta aberto e nao foi vizitado"<<endl;
+                    }
                 }
             }
 
             if(coletaMaisProx > 0){
-                int destinoColetaMaisProx = coletaMaisProx + ((instancia.size - 1) / 2);;
+                int destinoColetaMaisProx = coletaMaisProx + ((instancia.size - 1) / 2);
                 if((caminhao.tempoRestante - (MA[s][coletaMaisProx] + MA[coletaMaisProx][0] + MA[coletaMaisProx][destinoColetaMaisProx])) < MA[s][0]){
                     caminhao.tempoRestante = 0;
                     caminhao.posicaoAtual = 0;
@@ -292,7 +302,7 @@ void caminho(Caminhao caminhao, bool verticesVisitados[]) {
                 }
             }
         }
-        if(vizitouTodos(verticesVisitados)){
+        if(vizitouTodos(verticesVisitados) && (caminhao.tempoRestante > 20)){
             caminhao.tempoRestante = 0;
             caminhao.posicaoAtual = 0;
             cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
