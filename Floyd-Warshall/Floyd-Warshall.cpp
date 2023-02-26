@@ -52,17 +52,18 @@ int main()
     // matriz de adjacencia
     int** MA;
     int** MA2;
-    int n = 1;
+    int n;
      
     ifstream arquivo("01.txt");
     if(arquivo){
+        arquivo >> n;
         while (n != 0){
             
-            arquivo >> n;
-
+            // Aloca a matriz de adjacencia
             MA = new int*[n];
             MA2 = new int*[n];
             
+            // Inicializa a matriz de adjacencia
             for(int i = 0; i < n; i++){
                 MA[i] = new int[n];
                 MA2[i] = new int[n];
@@ -72,6 +73,7 @@ int main()
                 }
             }
 
+            // Le a matriz de adjacencia
             for(int i = 0; i < n; i++){
                 for(int j = 0; j < n; j++){
                     arquivo >> MA[i][j];
