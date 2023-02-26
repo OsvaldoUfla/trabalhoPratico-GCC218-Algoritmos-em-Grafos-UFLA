@@ -33,5 +33,5 @@
 
 .vscode
 
-.vscode/
-.executavel/
+vscode/
+executavel/
