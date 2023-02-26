@@ -1,5 +1,8 @@
 #include <iostream>
 #include <fstream>
+#include<vector>
+#include<utility>
+#include<functional>
 
 using namespace std;
 /*
@@ -12,102 +15,98 @@ using namespace std;
 
 #define INF 1000000000
 
-/*
- * Variaveis globais
- */
-
-// matriz de adjacencia
-int** MA;
-int** MA2;
-
-// quantidade de vertices
-int n;
-
-// quantidade de arestas
-int m;
-
-// quantidade de pares origem-destino a ser calculado
-int k;
-
-int floyd_warshall()
+void floyd_warshall(int** MA, int n)
 {
-    for(int k = 0; k < n; k++)
-      for(int i = 0; i < n; i++)
-        for(int j = 0; j < n; j++)
+    for(int k = 0; k < n; k++){
+      for(int i = 0; i < n; i++){
+        for(int j = 0; j < n; j++){
           /*
            * Adaptacao: originalmente, o calculo eh MA[i][j] = min(MA[i][j], MA[i][k] + MA[k][j]);
            */
-          MA[i][j] = min(MA[i][j], max(MA[i][k], MA[k][j]));
+          //MA[i][j] = min(MA[i][j], max(MA[i][k], MA[k][j]));
+          MA[i][j] = min(MA[i][j], MA[i][k] + MA[k][j]);
+        }
+      }
+    }
 }
 
-/* Função para ler o arquivo
-*  Recebe o nome do arquivo como parâmetro, Matriz de adjacência, Matriz de adjacência 2
-*  Preenche as matrizes com os valores do arquivo
+/*
+*   Método para comparar duas matrizes returna True se forem iguais e false senão
 */
-void leitura(string nmArq, int** MA, int** MA2){
-    
-    int tamanhoDaMatriz = 0;
-    ifstream arquivo(nmArq);
-    arquivo >> tamanhoDaMatriz;
-
-
-    if(arquivo){
-        while(arquivo >> tamanhoDaMatriz){
-            cout<<tamanhoDaMatriz<<endl;
+bool comparaMatrizes(int **MA, int **MA2, int n){
+    bool igual = true;
+    for(int i = 0; i < n and igual; i++){
+            for(int j = 0; j < n and igual; j++){
+                //cout << "i:" << i <<" -> j:" << j << "    " << MA2[i][j] << "     " << MA[i][j] << endl;
+                if(MA[i][j] != MA2[i][j]){
+                    igual = false;
+                }
+                
+            }
         }
-        arquivo.close();
+    return igual;
+}
+
+int main()
+{
+    // matriz de adjacencia
+    int** MA;
+    int** MA2;
+    int n = 1;
+     
+    ifstream arquivo("01.txt");
+    if(arquivo){
+        while (n != 0){
+            
+            arquivo >> n;
+
+            MA = new int*[n];
+            MA2 = new int*[n];
+            
+            for(int i = 0; i < n; i++){
+                MA[i] = new int[n];
+                MA2[i] = new int[n];
+                for(int j = 0; j < n; j++){
+                    MA[i][j] = INF;
+                    MA2[i][j] = INF;
+                }
+            }
+
+            for(int i = 0; i < n; i++){
+                for(int j = 0; j < n; j++){
+                    arquivo >> MA[i][j];
+                    MA2[i][j] = MA[i][j];
+                }
+            }
+            
+            // Aplicando o algoritmo de Floyd-Warshall na matriz de adjacencia MA
+            floyd_warshall(MA, n);
+            // Exibe se as matrizes são iguais
+            cout << endl << comparaMatrizes(MA, MA2, n) << endl;
+
+            // desalocando a matriz
+            for(int i = 0; i < n; i++){
+                delete[] MA[i];
+                delete[] MA2[i];
+            }
+            delete[] MA;
+            delete[] MA2;
+
+            // Inicia uma nova instancia do arquivo
+            arquivo >> n;
+        }
     }
     else{
         cout<<"Erro ao abrir o aquivo"<<endl;
         arquivo.clear();
     }
-}
+    // Fecha o arquivo
+    arquivo.close();
+    
 
-int main()
-{
-    int instancia = 1;
-    cin >> n >> m;
-    while(n != 0 && m != 0)
-    {     
-        MA = new int*[n];
-        int u, v, h;
-     
-        for(int i = 0; i < n; i++)
-        {
-            MA[i] = new int[n];
-            for(int j = 0; j < n; j++)
-                MA[i][j] = INF;
-        }
-
-        for(int i = 0; i < m; i++)
-        {
-            cin >> u >> v >> h;
-            u--;
-            v--;
-            MA[u][v] = MA[v][u] = h;
-        }
-     
-        floyd_warshall();
-     
-        int org, dst, k;
-        cin >> k;
-        cout << "Instancia " << instancia << endl;
-        for(int i = 0; i < k; i++)
-        {
-            cin >> org >> dst;
-            org--;
-            dst--;
-            if(org != dst)
-              cout << MA[org][dst] << endl;
-         
-            else
-              cout << 0 << endl;
-        }
-        instancia++;
-        cout << endl;
-     
-        cin >> n >> m;
-    }
- 
+    
+    //for(int i = 1 ; i < (n - 1)/2 ; i++){
+    //    cout << "i:" << i <<" -> j:" << i + ((n-1)/2) << "      " << MA[i][i + ((n-1)/2)] << "   " << MA2[i][i + ((n-1)/2)] << endl;
+    //}
     return 0;
 }
