@@ -124,7 +124,8 @@ void imprimirMatriz(){
 void leitura(string nmArq){
     string linha;
     int altLeitura = 0;
-    ifstream arquivo(nmArq);
+    ifstream arquivo;
+    arquivo.open(nmArq);
     int s = 0;
 
 
@@ -132,7 +133,6 @@ void leitura(string nmArq){
         while(getline(arquivo, linha)){
             if(altLeitura == 0){
                 preencheInstancia(linha);
-                
                 if(coutCampos == 10){
                     altLeitura++;
                     instancia.name = campos[0];
@@ -319,7 +319,10 @@ void caminho(Caminhao caminhao, bool verticesVisitados[]) {
 
 int main()
 {    
-    leitura("instances/poa-n100-6.txt");
+    string nomeArquivo;
+    cout << "informe o nome do arquivo para leitura dos dados" << endl;
+    cin >> nomeArquivo;
+    leitura("instances/" + nomeArquivo);
 
     bool verticesVisitados[instancia.size];
 
