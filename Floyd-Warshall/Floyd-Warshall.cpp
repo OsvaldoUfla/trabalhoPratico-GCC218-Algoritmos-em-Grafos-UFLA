@@ -47,6 +47,16 @@ bool comparaMatrizes(int **MA, int **MA2, int n){
     return igual;
 }
 
+// Método para imprimir uma matriz
+void printMatriz(int **MA, int n){
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < n; j++){
+            cout << MA[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
 int main()
 {
     // matriz de adjacencia
@@ -54,7 +64,7 @@ int main()
     int** MA2;
     int n;
      
-    ifstream arquivo("01.txt");
+    ifstream arquivo("04.txt");
     if(arquivo){
         arquivo >> n;
         while (n != 0){
@@ -84,7 +94,12 @@ int main()
             // Aplicando o algoritmo de Floyd-Warshall na matriz de adjacencia MA
             floyd_warshall(MA, n);
             // Exibe se as matrizes são iguais
-            cout << endl << comparaMatrizes(MA, MA2, n) << endl;
+            cout << endl << comparaMatrizes(MA, MA2, n) << endl ;
+
+            //cout << endl << endl;
+            //printMatriz(MA, n);
+            //cout << endl << endl;
+            //printMatriz(MA2, n);
 
             // desalocando a matriz
             for(int i = 0; i < n; i++){
