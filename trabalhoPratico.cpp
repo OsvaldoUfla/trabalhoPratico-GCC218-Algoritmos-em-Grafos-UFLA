@@ -137,7 +137,8 @@ void imprimirMatriz(){
 void leitura(string nmArq){
     string linha;
     int altLeitura = 0;
-    ifstream arquivo(nmArq);
+    ifstream arquivo;
+    arquivo.open(nmArq);
     int s = 0;
 
 
@@ -145,7 +146,6 @@ void leitura(string nmArq){
         while(getline(arquivo, linha)){
             if(altLeitura == 0){
                 preencheInstancia(linha);
-                
                 if(coutCampos == 10){
                     altLeitura++;
                     instancia.name = campos[0];
@@ -364,8 +364,16 @@ void gerarCsv(){
 }
 
 int main()
+<<<<<<< HEAD
 {
     leitura("instances/bar-n100-2.txt");
+=======
+{    
+    string nomeArquivo;
+    cout << "informe o nome do arquivo para leitura dos dados" << endl;
+    cin >> nomeArquivo;
+    leitura("instances/" + nomeArquivo);
+>>>>>>> 53dab0f574cd1ea8dfbe04f06cbc8aedf613736b
 
     bool verticesVisitados[instancia.size];
 
