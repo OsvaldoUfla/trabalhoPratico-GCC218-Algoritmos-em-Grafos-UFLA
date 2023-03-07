@@ -222,7 +222,6 @@ int dist(Caminhao caminhao, int tempoAtual){
 vector<int>trajeto;
 
 void caminho(Caminhao caminhao, bool verticesVisitados[], Estatisticas& estatisticas) {
-    //cout << "Caminhao " << cnt << endl; cnt++;
     int tempoAtual = 0;
     estatisticas.caminhoes++;
     while ((!vizitouTodos(verticesVisitados)) && caminhao.tempoRestante > 20) {
@@ -246,7 +245,6 @@ void caminho(Caminhao caminhao, bool verticesVisitados[], Estatisticas& estatist
                         espera = instancia.vertices.at(destinoMc).etw - (MA[s][mc] + MA[mc][destinoMc] + tempoAtual);
                     
                     if((caminhao.tempoRestante - (MA[s][mc] + MA[mc][destinoMc] + espera)) > MA[t][0]){
-                        //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(mc).id << endl;
                         trajeto.push_back(instancia.vertices.at(s).id);
                         caminhao.tempoRestante -= MA[s][mc];
                         caminhao.posicaoAtual = mc;
@@ -256,14 +254,12 @@ void caminho(Caminhao caminhao, bool verticesVisitados[], Estatisticas& estatist
                         estatisticas.tempoTotal += (instancia.routeTime - caminhao.tempoRestante);
                         caminhao.tempoRestante = 0;
                         caminhao.posicaoAtual = 0;
-                        //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
                         trajeto.push_back(instancia.vertices.at(s).id);
                     }
                     if(s == mc){
                         estatisticas.tempoTotal += (instancia.routeTime - caminhao.tempoRestante);
                         caminhao.tempoRestante = 0;
                         caminhao.posicaoAtual = 0;
-                        //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
                         trajeto.push_back(instancia.vertices.at(s).id);
                         s = 0;
                     }
@@ -272,7 +268,6 @@ void caminho(Caminhao caminhao, bool verticesVisitados[], Estatisticas& estatist
                     estatisticas.tempoTotal += (instancia.routeTime - caminhao.tempoRestante);
                     caminhao.tempoRestante = 0;
                     caminhao.posicaoAtual = 0;
-                    //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
                     trajeto.push_back(instancia.vertices.at(s).id);
                 }
             }else{
@@ -281,7 +276,6 @@ void caminho(Caminhao caminhao, bool verticesVisitados[], Estatisticas& estatist
                 caminhao.tempoRestante -= ((MA[s][t]) + espera);
                 
                 tempoAtual += ((MA[s][t]) + espera);
-                //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(t).id << endl;
                 trajeto.push_back(instancia.vertices.at(s).id);
                 s = t;
                 caminhao.posicaoAtual = t;
@@ -315,12 +309,10 @@ void caminho(Caminhao caminhao, bool verticesVisitados[], Estatisticas& estatist
                     estatisticas.tempoTotal += (instancia.routeTime - caminhao.tempoRestante);
                     caminhao.tempoRestante = 0;
                     caminhao.posicaoAtual = 0;
-                    //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
                     trajeto.push_back(instancia.vertices.at(s).id);
                 }
                 else{
                     caminhao.tempoRestante -= (MA[s][coletaMaisProx]);
-                    //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(coletaMaisProx).id << endl;
                     trajeto.push_back(instancia.vertices.at(s).id);
 
                     s = coletaMaisProx;
@@ -332,11 +324,9 @@ void caminho(Caminhao caminhao, bool verticesVisitados[], Estatisticas& estatist
             estatisticas.tempoTotal += (instancia.routeTime - caminhao.tempoRestante);
             caminhao.tempoRestante = 0;
             caminhao.posicaoAtual = 0;
-            //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
             trajeto.push_back(instancia.vertices.at(s).id);
         }
     }
-    //cout << "Terminando o exercicio" << endl;
 }
 
 void gerarCsv(){
@@ -365,8 +355,21 @@ void gerarCsv(){
 
 int main()
 {
-    leitura("instances/bar-n100-2.txt");
+    char comando = 'N';
+    do{
+        cout << "Deseja informar o nome do arquivo?\ns - sim\nn - nao" << endl << "> ";
+        cin >> comando;
 
+        if(comando == 's'){
+            cout << "Por favor, informe o nome da instancia que deseja ler (sem o .txt):" << endl << "> ";
+            string nomeArq;
+            cin >> nomeArq;
+            leitura("instances/" + nomeArq + ".txt");
+        } else if(comando == 'n')
+            leitura("instances/bar-n100-2.txt");
+
+    } while (comando != 's' && comando != 'n');
+    
     bool verticesVisitados[instancia.size];
 
     // marca todos os vertices como nao vizitados
@@ -386,25 +389,26 @@ int main()
     while(!vizitouTodos(verticesVisitados)){
         caminho(caminhao, verticesVisitados, estatisticas);
     }
+
     trajeto.push_back(0);
 
     cout<<estatisticas.caminhoes<<" | "<<estatisticas.tempoTotal<<endl;
 
-    char comando = 'N';
+    comando = 'N';
     do{
-        cout << "Deseja visualizar as rotas no mapa?\ns - sim\nn - nao" << endl;
+        cout << "Deseja visualizar as rotas no mapa?\ns - sim\nn - nao" << endl << "> ";
         cin >> comando;
         if(comando == 's'){
-            cout << "Gerando o arquivo..." << endl;
+            cout << "Gerando o arquivo JSON..." << endl;
             gerarCsv();
-            cout << "Arquivo JSON gerado!" << endl;
+            cout << "Arquivo JSON gerado com sucesso!" << endl << "Se encontrar um erro ao abrir o mapa, tente rodar a aplicacao em um servidor local." << endl;
+            cout << "Como o arquivo JSON ja foi gerado, basta abrir o arquivo `index.html` usando o servidor local." << endl;
         }
     } while (comando != 's' && comando != 'n');
     
     instancia.vertices.clear();
 
-    cout<<"Fechando o programa..."<<endl;
+    cout << "Fechando o programa..." << endl;
 
     return 0;
 }
-//AIzaSyAKGTQ2ru-OnZdBa_PazwaSw4it-SRGCSE
