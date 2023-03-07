@@ -1,14 +1,25 @@
+/*
+Exercício Avaliativo 2
+GCC218 - Algoritmos em Grafos
+Professor: Mayron César de O. Moreira.
+Alunos :
+    Julia Teixeira
+    Osvaldo Rodrigues de Faria Junior 201911203 14A
+    Robson Ferreira dos Santos Junior 202120530 14A
+*/
+
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
+#include <stdlib.h>
 
 using namespace std;
 
 struct Vertice{
     int id;
-    double lat;
-    double longi;
+    string lat;
+    string longi;
     int dem;
     int etw;
     int ltw;
@@ -38,13 +49,15 @@ struct Caminhao{
     int posicaoAtual;
 };
 
+struct Estatisticas{
+    int caminhoes;
+    int tempoTotal;
+};
+
 string campos [10];
 int coutCampos = 0;
-
 Instancia instancia;
-
 int** MA;
-int N;
 
 void preencheInstancia(string linha){
     bool addChar = false;
@@ -72,8 +85,8 @@ void preencheNo(string linha){
     }
     Vertice vertice;
     vertice.id = (stoi(campos[0]));
-    vertice.lat = (stod(campos[1]));
-    vertice.longi = (stod(campos[2]));
+    vertice.lat = (campos[1]);
+    vertice.longi = (campos[2]);
     vertice.dem = (stoi(campos[3]));
     vertice.etw = (stoi(campos[4]));
     vertice.ltw = (stoi(campos[5]));
@@ -83,8 +96,8 @@ void preencheNo(string linha){
     instancia.vertices.push_back(vertice);
 }
 
-void iniciarMatriz(int n){
-    N = n;
+void iniciarMatriz(){
+    int N = instancia.size;
     MA = new int*[N];
     
     for(int i = 0; i < N; i++)
@@ -150,7 +163,7 @@ void leitura(string nmArq){
                 if(linha[0] == '0' || linha[0] == '1' || linha[0] == '2' || linha[0] == '3' || linha[0] == '4' || linha[0] == '5' || linha[0] == '6' || linha[0] == '7' || linha[0] == '8' || linha[0] == '9')
                     preencheNo(linha);
                 if(linha == "EDGES"){
-                    iniciarMatriz(instancia.size);
+                    iniciarMatriz();
                     altLeitura++;
                 }
             } else {
@@ -206,11 +219,12 @@ int dist(Caminhao caminhao, int tempoAtual){
 
     return result;
 }
-int cnt = 1;
-int totalTempo = 0;
-void caminho(Caminhao caminhao, bool verticesVisitados[]) {
+vector<int>trajeto;
+
+void caminho(Caminhao caminhao, bool verticesVisitados[], Estatisticas& estatisticas) {
     //cout << "Caminhao " << cnt << endl; cnt++;
     int tempoAtual = 0;
+    estatisticas.caminhoes++;
     while ((!vizitouTodos(verticesVisitados)) && caminhao.tempoRestante > 20) {
         int s = caminhao.posicaoAtual;
         int t = s + ((instancia.size - 1) / 2);
@@ -233,29 +247,33 @@ void caminho(Caminhao caminhao, bool verticesVisitados[]) {
                     
                     if((caminhao.tempoRestante - (MA[s][mc] + MA[mc][destinoMc] + espera)) > MA[t][0]){
                         //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(mc).id << endl;
+                        trajeto.push_back(instancia.vertices.at(s).id);
                         caminhao.tempoRestante -= MA[s][mc];
                         caminhao.posicaoAtual = mc;
                         s = mc;
                     }
                     else{
-                        totalTempo += (instancia.routeTime - caminhao.tempoRestante);
+                        estatisticas.tempoTotal += (instancia.routeTime - caminhao.tempoRestante);
                         caminhao.tempoRestante = 0;
                         caminhao.posicaoAtual = 0;
                         //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
+                        trajeto.push_back(instancia.vertices.at(s).id);
                     }
                     if(s == mc){
-                        totalTempo += (instancia.routeTime - caminhao.tempoRestante);
+                        estatisticas.tempoTotal += (instancia.routeTime - caminhao.tempoRestante);
                         caminhao.tempoRestante = 0;
                         caminhao.posicaoAtual = 0;
                         //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
+                        trajeto.push_back(instancia.vertices.at(s).id);
                         s = 0;
                     }
                 }
                 else{
-                    totalTempo += (instancia.routeTime - caminhao.tempoRestante);
+                    estatisticas.tempoTotal += (instancia.routeTime - caminhao.tempoRestante);
                     caminhao.tempoRestante = 0;
                     caminhao.posicaoAtual = 0;
                     //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
+                    trajeto.push_back(instancia.vertices.at(s).id);
                 }
             }else{
                 verticesVisitados[s] = true;
@@ -264,6 +282,7 @@ void caminho(Caminhao caminhao, bool verticesVisitados[]) {
                 
                 tempoAtual += ((MA[s][t]) + espera);
                 //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(t).id << endl;
+                trajeto.push_back(instancia.vertices.at(s).id);
                 s = t;
                 caminhao.posicaoAtual = t;
             }           
@@ -276,7 +295,7 @@ void caminho(Caminhao caminhao, bool verticesVisitados[]) {
                 verticesVisitados[s] = true;
 
             for(int i = 1; i < instancia.size; i++){
-                int ti = i + ((instancia.size - 1) / 2);
+                
                 if((MA[s][i] < distanciaColeta) && (instancia.vertices.at(i).dem > 0) && (!verticesVisitados[i])){
                     int esp; 
                     if((tempoAtual + MA[s][i]) > instancia.vertices.at(i).etw){
@@ -293,14 +312,16 @@ void caminho(Caminhao caminhao, bool verticesVisitados[]) {
             if(coletaMaisProx > 0){
                 int destinoColetaMaisProx = coletaMaisProx + ((instancia.size - 1) / 2);
                 if((caminhao.tempoRestante - (MA[s][coletaMaisProx] + MA[coletaMaisProx][0] + MA[coletaMaisProx][destinoColetaMaisProx])) < MA[s][0]){
-                    totalTempo += (instancia.routeTime - caminhao.tempoRestante);
+                    estatisticas.tempoTotal += (instancia.routeTime - caminhao.tempoRestante);
                     caminhao.tempoRestante = 0;
                     caminhao.posicaoAtual = 0;
                     //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
+                    trajeto.push_back(instancia.vertices.at(s).id);
                 }
                 else{
                     caminhao.tempoRestante -= (MA[s][coletaMaisProx]);
                     //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(coletaMaisProx).id << endl;
+                    trajeto.push_back(instancia.vertices.at(s).id);
 
                     s = coletaMaisProx;
                     caminhao.posicaoAtual = coletaMaisProx;
@@ -308,18 +329,43 @@ void caminho(Caminhao caminhao, bool verticesVisitados[]) {
             }
         }
         if(vizitouTodos(verticesVisitados) && (caminhao.tempoRestante > 20)){
-            totalTempo += (instancia.routeTime - caminhao.tempoRestante);
+            estatisticas.tempoTotal += (instancia.routeTime - caminhao.tempoRestante);
             caminhao.tempoRestante = 0;
             caminhao.posicaoAtual = 0;
             //cout << "-> " << instancia.vertices.at(s).id << " - " << instancia.vertices.at(0).id << endl;
+            trajeto.push_back(instancia.vertices.at(s).id);
         }
     }
     //cout << "Terminando o exercicio" << endl;
 }
 
+void gerarCsv(){
+    ofstream arq;
+    arq.open("dados.json");
+    if(arq){
+        int count = 0;
+        arq << "{" << endl;
+        arq << "\"rotas\": [" << endl;
+        for(int vertice : trajeto){
+            arq << "\"" << instancia.vertices.at(vertice).lat << " " << instancia.vertices.at(vertice).longi << "\"";
+            if(count < trajeto.size() - 1){
+                arq << "," << endl;
+            } else {
+                arq << endl;
+            }
+            count++;
+        }
+        arq << "]" << endl;
+        arq << "}" << endl;
+        
+        arq.close();
+    }
+    system("start index.html");
+}
+
 int main()
-{    
-    leitura("instances/poa-n100-6.txt");
+{
+    leitura("instances/bar-n100-2.txt");
 
     bool verticesVisitados[instancia.size];
 
@@ -333,18 +379,32 @@ int main()
     
     caminhao.posicaoAtual = 0;
 
+    Estatisticas estatisticas;
+    estatisticas.caminhoes = 1;
+    estatisticas.tempoTotal = 0;
+
     while(!vizitouTodos(verticesVisitados)){
-        caminho(caminhao, verticesVisitados);
+        caminho(caminhao, verticesVisitados, estatisticas);
     }
+    trajeto.push_back(0);
 
-    //cout<<"Deve ser -1: " << proxVerticeNaoVizitado(verticesVisitados) << endl;
-    cout<<cnt<<" | "<<totalTempo<<endl;
+    cout<<estatisticas.caminhoes<<" | "<<estatisticas.tempoTotal<<endl;
 
-    for(int i = 0; i < N; i++)
-        delete [] MA[i];
-    delete [] MA;
+    char comando = 'N';
+    do{
+        cout << "Deseja visualizar as rotas no mapa?\ns - sim\nn - nao" << endl;
+        cin >> comando;
+        if(comando == 's'){
+            cout << "Gerando o arquivo..." << endl;
+            gerarCsv();
+            cout << "Arquivo CSV gerado!" << endl;
+        }
+    } while (comando != 's' && comando != 'n');
+    
+    instancia.vertices.clear();
 
-    cout<<"Fechou o programa"<<endl;
+    cout<<"Fechando o programa..."<<endl;
 
     return 0;
 }
+//AIzaSyAKGTQ2ru-OnZdBa_PazwaSw4it-SRGCSE
